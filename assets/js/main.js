@@ -82,15 +82,6 @@ function initSmoothScroll() {
 /**
  * 3. microCMS 動的データ取得 & モックフォールバック
  */
-const MICROCMS_CONFIG = {
-  serviceDomain: '', // 例: 'cafe-happyfull' (後ほど管理画面から設定)
-  apiKey: '',        // GET用のAPIキー
-  endpoints: {
-    news: 'news',
-    menu: 'menu'
-  }
-};
-
 async function initMicroCMS() {
   // まずはお知らせとメニューの初期表示用モックデータを定義（API未接続時のフォールバック）
   const mockNews = [
@@ -132,46 +123,35 @@ async function initMicroCMS() {
     }
   ];
 
-  // APIキーが設定されている場合は本物のmicroCMSからロードを試みる
-  if (MICROCMS_CONFIG.serviceDomain && MICROCMS_CONFIG.apiKey) {
-    try {
-      const news = await fetchFromMicroCMS(MICROCMS_CONFIG.endpoints.news);
-      renderNews(news);
-    } catch (e) {
-      console.warn('microCMS News API Fetch Failed. Loading Mock Data instead.', e);
-      renderNews(mockNews);
-    }
-
-    try {
-      const menu = await fetchFromMicroCMS(MICROCMS_CONFIG.endpoints.menu);
-      renderMenu(menu);
-    } catch (e) {
-      console.warn('microCMS Menu API Fetch Failed. Loading Mock Data instead.', e);
-      renderMenu(mockMenu);
-    }
-  } else {
-    // API未設定の場合はモックデータを表示（開発初期段階）
-    console.log('microCMS API key not set. Rendering mock data.');
+  // Netlify Functions（サーバーレス関数）経由でお知らせとメニューを取得
+  try {
+    const news = await fetchFromMicroCMS('news');
+    renderNews(news);
+  } catch (e) {
+    console.warn('microCMS News API Fetch Failed. Loading Mock Data instead.', e);
     renderNews(mockNews);
+  }
+
+  try {
+    const menu = await fetchFromMicroCMS('menu');
+    renderMenu(menu);
+  } catch (e) {
+    console.warn('microCMS Menu API Fetch Failed. Loading Mock Data instead.', e);
     renderMenu(mockMenu);
   }
 }
 
 /**
- * microCMSの共通fetch関数
+ * Netlify Functionsを介してmicroCMSのデータを取得する共通関数
  */
 async function fetchFromMicroCMS(endpoint) {
-  const url = `https://${MICROCMS_CONFIG.serviceDomain}.microcms.io/api/v1/${endpoint}`;
-  const response = await fetch(url, {
-    headers: {
-      'X-MICROCMS-API-KEY': MICROCMS_CONFIG.apiKey
-    }
-  });
+  // 環境に関わらず、常に相対パスのNetlify Functionsエンドポイントを呼び出す
+  const url = `/.netlify/functions/get-microcms-data?endpoint=${endpoint}`;
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  const data = await response.json();
-  return data.contents; // microCMSはcontents配列にアイテムが入っています
+  return await response.json();
 }
 
 /**
@@ -187,7 +167,9 @@ function renderNews(newsList) {
   }
 
   newsContainer.innerHTML = newsList.map(item => {
-    const formattedDate = item.date ? item.date.substring(0, 10).replace(/-/g, '.') : '';
+    // 独自の日付フィールド(item.date)か、自動付与される公開日(item.publishedAt)を使用
+    const rawDate = item.date || item.publishedAt || '';
+    const formattedDate = rawDate ? rawDate.substring(0, 10).replace(/-/g, '.') : '';
     return `
       <article class="concept__highlight" style="margin-bottom: 1.5rem;">
         <span class="standard-item__badge" style="font-size: 0.85rem; margin-bottom: 0.2rem; display: block;">${formattedDate}</span>
@@ -211,8 +193,8 @@ function renderMenu(menuList) {
   }
 
   menuContainer.innerHTML = menuList.map(item => {
-    // 画像が無い場合のプレースホルダー
-    const imageSrc = item.image || 'assets/images/coffee.png';
+    // 画像が無い場合のプレースホルダー。microCMSの画像オブジェクト { url: '...' } とモック用文字列の両方に対応
+    const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/coffee.png');
     return `
       <div class="menu-card">
         <div class="menu-card__img">
