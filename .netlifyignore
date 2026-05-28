@@ -1,0 +1,5 @@
+# Netlifyにデプロイしないファイルを指定
+*.md
+.aiignore
+.github
+.gitattributes
