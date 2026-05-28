@@ -54,7 +54,15 @@ function initSmoothScroll() {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
       const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
+      
+      // ロゴまたは「#」のみの場合はページ最上部へスムーズスクロール
+      if (targetId === '#' || this.id === 'js-logo-top') {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        return;
+      }
       
       const targetElement = document.querySelector(targetId);
       if (targetElement) {
