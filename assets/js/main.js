@@ -174,7 +174,7 @@ function renderNews(newsList) {
       <article class="concept__highlight" style="margin-bottom: 1.5rem;">
         <span class="standard-item__badge" style="font-size: 0.85rem; margin-bottom: 0.2rem; display: block;">${formattedDate}</span>
         <h4 style="font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--text-dark);">${item.title}</h4>
-        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; line-height: 1.6;">${item.content}</p>
+        <div class="concept__highlight-content" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; line-height: 1.6;">${item.content}</div>
       </article>
     `;
   }).join('');

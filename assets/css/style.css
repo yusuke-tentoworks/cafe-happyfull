@@ -5,15 +5,24 @@
    ========================================================================== */
 :root {
   /* Brand Colors (Nordic-inspired gentle palette) */
-  --primary-color: #7ab2b6;       /* Gentle blue-grey / Teal */
-  --primary-light: #eff6f7;      /* Very soft primary tint */
-  --secondary-color: #e8a7a1;     /* Soft warm apricot / Coral pink */
-  --secondary-light: #fdf5f4;    /* Light accent tint */
-  --bg-color: #faf8f5;           /* Cozy warm off-white */
-  --card-bg: #ffffff;            /* Pure white for cards */
-  --text-dark: #3e4749;          /* Deep slate (softer than black) */
-  --text-muted: #727e80;         /* Muted grey */
-  --border-color: #e1e7e8;       /* Subtle warm borders */
+  --primary-color: #7ab2b6;
+  /* Gentle blue-grey / Teal */
+  --primary-light: #eff6f7;
+  /* Very soft primary tint */
+  --secondary-color: #e8a7a1;
+  /* Soft warm apricot / Coral pink */
+  --secondary-light: #fdf5f4;
+  /* Light accent tint */
+  --bg-color: #faf8f5;
+  /* Cozy warm off-white */
+  --card-bg: #ffffff;
+  /* Pure white for cards */
+  --text-dark: #3e4749;
+  /* Deep slate (softer than black) */
+  --text-muted: #727e80;
+  /* Muted grey */
+  --border-color: #e1e7e8;
+  /* Subtle warm borders */
 
   /* Fonts */
   --font-base: 'Noto Sans JP', sans-serif;
@@ -31,20 +40,22 @@
   --border-radius-md: 16px;
   --border-radius-lg: 24px;
   --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  
+
   /* Multilayer premium shadows */
-  --box-shadow-soft: 0 4px 6px -1px rgba(122, 178, 182, 0.02), 
-                     0 10px 20px -3px rgba(122, 178, 182, 0.05),
-                     0 20px 30px -5px rgba(122, 178, 182, 0.07);
-  --box-shadow-hover: 0 10px 20px -3px rgba(122, 178, 182, 0.04), 
-                      0 25px 40px -5px rgba(122, 178, 182, 0.12), 
-                      0 40px 60px -10px rgba(122, 178, 182, 0.18);
+  --box-shadow-soft: 0 4px 6px -1px rgba(122, 178, 182, 0.02),
+    0 10px 20px -3px rgba(122, 178, 182, 0.05),
+    0 20px 30px -5px rgba(122, 178, 182, 0.07);
+  --box-shadow-hover: 0 10px 20px -3px rgba(122, 178, 182, 0.04),
+    0 25px 40px -5px rgba(122, 178, 182, 0.12),
+    0 40px 60px -10px rgba(122, 178, 182, 0.18);
 }
 
 /* ==========================================================================
    Reset & Base Styles
    ========================================================================== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -76,7 +87,10 @@ a {
   transition: var(--transition-smooth);
 }
 
-button, input, textarea, select {
+button,
+input,
+textarea,
+select {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
@@ -91,7 +105,10 @@ ul {
 /* ==========================================================================
    Typography & Common Layout
    ========================================================================== */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: 700;
   line-height: 1.4;
 }
@@ -306,8 +323,15 @@ p {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 /* ==========================================================================
@@ -373,12 +397,65 @@ p {
   padding: 1.2rem;
   border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
   margin-bottom: var(--spacing-md);
+  transition: var(--transition-smooth);
+  /* はみ出し防止の折り返し設定 */
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
-.concept__highlight p {
-  margin-bottom: 0;
+.concept__highlight:hover {
+  background-color: rgba(122, 178, 182, 0.1);
+  border-color: rgba(122, 178, 182, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(122, 178, 182, 0.04);
+}
+
+/* お知らせ本文の改行・折り返し設定 */
+.concept__highlight-content {
+  white-space: pre-wrap;
+  /* \n などの改行コードをそのまま反映 */
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+/* microCMSのリッチテキスト（HTMLタグ）が挿入された場合の崩れ防止 */
+.concept__highlight-content h1,
+.concept__highlight-content h2,
+.concept__highlight-content h3,
+.concept__highlight-content h4,
+.concept__highlight-content h5,
+.concept__highlight-content h6 {
+  font-size: 1.1rem !important;
+  font-weight: 700;
+  color: var(--text-dark) !important;
+  margin: 0.8rem 0 0.4rem 0 !important;
+  text-align: left !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.concept__highlight-content h1::after,
+.concept__highlight-content h2::after {
+  display: none !important;
+  /* グローバルの h2::after の下線を消す */
+}
+
+.concept__highlight-content p {
+  margin-bottom: 0.5rem !important;
+  line-height: 1.6 !important;
   font-weight: 500;
-  color: var(--text-dark);
+  color: var(--text-muted);
+}
+
+.concept__highlight-content p:last-child {
+  margin-bottom: 0 !important;
+}
+
+.concept__highlight-content img {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: var(--border-radius-sm);
+  margin: 0.5rem 0;
 }
 
 /* ==========================================================================
@@ -700,7 +777,8 @@ p {
   border-collapse: collapse;
 }
 
-.access__table th, .access__table td {
+.access__table th,
+.access__table td {
   padding: 1rem 0;
   border-bottom: 1px solid var(--border-color);
 }
@@ -767,7 +845,9 @@ p {
   color: var(--text-dark);
 }
 
-.form__input, .form__select, .form__textarea {
+.form__input,
+.form__select,
+.form__textarea {
   width: 100%;
   background-color: #fff;
   border: 1px solid var(--border-color);
@@ -777,7 +857,9 @@ p {
   transition: var(--transition-smooth);
 }
 
-.form__input:focus, .form__select:focus, .form__textarea:focus {
+.form__input:focus,
+.form__select:focus,
+.form__textarea:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(122, 178, 182, 0.15);
@@ -906,22 +988,26 @@ p {
    Responsive Settings
    ========================================================================== */
 @media (max-width: 992px) {
-  h2 { font-size: 1.8rem; }
-  
+  h2 {
+    font-size: 1.8rem;
+  }
+
   .concept__grid {
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
   }
-  
-  .standard-item, .standard-item:nth-child(even) {
+
+  .standard-item,
+  .standard-item:nth-child(even) {
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
   }
-  
-  .standard-item__image, .standard-item:nth-child(even) .standard-item__image {
+
+  .standard-item__image,
+  .standard-item:nth-child(even) .standard-item__image {
     order: 0;
   }
-  
+
   .access__grid {
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
@@ -929,22 +1015,25 @@ p {
 }
 
 @media (max-width: 768px) {
-  .hero__title { font-size: 2.5rem; }
-  
-  .nav__list {
-    display: none; /* Mobile menu toggled by JS */
+  .hero__title {
+    font-size: 2.5rem;
   }
-  
+
+  .nav__list {
+    display: none;
+    /* Mobile menu toggled by JS */
+  }
+
   .nav__toggle {
     display: block;
   }
-  
+
   .footer__container {
     flex-direction: column;
     gap: var(--spacing-md);
     text-align: center;
   }
-  
+
   .footer__nav {
     flex-direction: column;
     gap: 1rem;
