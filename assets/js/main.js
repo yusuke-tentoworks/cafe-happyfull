@@ -131,40 +131,73 @@ async function initMicroCMS() {
   const previewType = urlParams.get('previewType') || 'news';
 
   // Netlify Functions（サーバーレス関数）経由でお知らせとメニューを取得
+  let draftNews = null;
+  let draftMenu = null;
+  let detectedType = previewType;
+
+  // プレビューパラメータがある場合、どちらの下書きかを自動判別または明示取得
+  if (contentId && draftKey) {
+    if (detectedType === 'menu') {
+      try {
+        draftMenu = await fetchFromMicroCMS('menu', { contentId, draftKey });
+      } catch (e) {
+        console.warn('Failed to fetch draft menu', e);
+      }
+    } else if (detectedType === 'news') {
+      try {
+        draftNews = await fetchFromMicroCMS('news', { contentId, draftKey });
+      } catch (e) {
+        console.warn('Failed to fetch draft news', e);
+      }
+    } else {
+      // previewType が未指定（または自動判定）の場合
+      // 1. まずお知らせでの取得を試みる
+      try {
+        const res = await fetchFromMicroCMS('news', { contentId, draftKey });
+        if (res && res.length > 0 && !res.error && res[0] && !res[0].error) {
+          draftNews = res;
+          detectedType = 'news';
+        } else {
+          throw new Error('Not news draft');
+        }
+      } catch (e) {
+        // 2. お知らせで取得できなかった場合はメニューでの取得を試みる
+        try {
+          const res = await fetchFromMicroCMS('menu', { contentId, draftKey });
+          if (res && res.length > 0 && !res.error && res[0] && !res[0].error) {
+            draftMenu = res;
+            detectedType = 'menu';
+          }
+        } catch (err) {
+          console.warn('Failed to auto-detect draft type', err);
+        }
+      }
+    }
+  }
+
+  // お知らせ（News）のフェッチとマージ
   try {
     let news;
-    if (contentId && draftKey && previewType === 'news') {
-      // お知らせのプレビューモード（下書き取得）
-      const draftNews = await fetchFromMicroCMS('news', { contentId, draftKey });
-
+    if (detectedType === 'news' && draftNews) {
       // 通常の公開済みニュースも取得してマージ
       try {
         const publicNews = await fetchFromMicroCMS('news');
-        // 重複（下書き中の記事が既に公開されている場合）を除外
         const filteredPublicNews = publicNews.filter(item => item.id !== contentId);
-
-        // 下書きにプレビュー用フラグを付与
-        if (draftNews && draftNews[0]) {
-          draftNews[0].isDraft = true;
-          // 日付が空の場合は今日の日付を設定
-          if (!draftNews[0].date && !draftNews[0].publishedAt) {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            draftNews[0].date = `${yyyy}-${mm}-${dd}`;
-          }
+        
+        draftNews[0].isDraft = true;
+        if (!draftNews[0].date && !draftNews[0].publishedAt) {
+          const today = new Date();
+          const yyyy = today.getFullYear();
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const dd = String(today.getDate()).padStart(2, '0');
+          draftNews[0].date = `${yyyy}-${mm}-${dd}`;
         }
         news = [...draftNews, ...filteredPublicNews];
       } catch (e) {
-        // 公開済みの取得に失敗した場合は下書きだけを表示
-        if (draftNews && draftNews[0]) {
-          draftNews[0].isDraft = true;
-        }
+        draftNews[0].isDraft = true;
         news = draftNews;
       }
     } else {
-      // 通常モード（全公開データ取得）
       news = await fetchFromMicroCMS('news');
     }
     renderNews(news);
@@ -173,32 +206,22 @@ async function initMicroCMS() {
     renderNews(mockNews);
   }
 
+  // メニュー（Menu）のフェッチとマージ
   try {
     let menu;
-    if (contentId && draftKey && previewType === 'menu') {
-      // メニューのプレビューモード（下書き取得）
-      const draftMenu = await fetchFromMicroCMS('menu', { contentId, draftKey });
-
+    if (detectedType === 'menu' && draftMenu) {
       // 通常の公開済みメニューも取得してマージ
       try {
         const publicMenu = await fetchFromMicroCMS('menu');
-        // 重複（下書き中のメニューが既に公開されている場合）を除外
         const filteredPublicMenu = publicMenu.filter(item => item.id !== contentId);
-
-        // 下書きにプレビュー用フラグを付与
-        if (draftMenu && draftMenu[0]) {
-          draftMenu[0].isDraft = true;
-        }
+        
+        draftMenu[0].isDraft = true;
         menu = [...draftMenu, ...filteredPublicMenu];
       } catch (e) {
-        // 公開済みの取得に失敗した場合は下書きだけを表示
-        if (draftMenu && draftMenu[0]) {
-          draftMenu[0].isDraft = true;
-        }
+        draftMenu[0].isDraft = true;
         menu = draftMenu;
       }
     } else {
-      // 通常モード（全公開データ取得）
       menu = await fetchFromMicroCMS('menu');
     }
     renderMenu(menu);
