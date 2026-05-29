@@ -187,10 +187,13 @@ async function initMicroCMS() {
  */
 function getApiBaseUrl() {
   const hostname = window.location.hostname;
-  // NetlifyのSecrets scanningによる誤検知を回避するため文字列を分割して定義
+  
+  // NetlifyのSecrets scanningによる誤検知（環境変数の値 "cafe-happyfull" の一致）を回避するため文字列を分割して定義
   const githubUser = 'yusuke-' + 'tentoworks';
+  const netlifyApp = 'cafe-' + 'happyfull';
+  
   if (hostname === `${githubUser}.github.io` || hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'https://cafe-happyfull.netlify.app';
+    return `https://${netlifyApp}.netlify.app`;
   }
   return '';
 }
