@@ -28,6 +28,7 @@
   <header class="header">
     <div class="container header__container">
       <a href="#" id="js-logo-top" class="header__logo">
+        <img src="assets/images/logo.png" alt="カフェ はぴふる Logo" class="header__logo-img">
         カフェ はぴふる
       </a>
       <nav class="nav">
@@ -50,9 +51,10 @@
   <section class="hero">
     <div class="container hero__container">
       <div class="hero__content">
+        <span class="hero__sub-badge">豊川・プリオに誕生する “まちの居場所”</span>
         <h1 class="hero__title">
-          まちのリビング
-          <span>カフェ はぴふる</span>
+          <span class="hero__title-sub"><span class="nobr">まちの</span><span class="nobr">リビング</span></span>
+          <span class="hero__title-main"><span class="nobr">カフェ</span> <span class="nobr">はぴふる</span></span>
         </h1>
         <p class="hero__description">
           だれでもほっと落ち着ける居場所を、いっしょに作りませんか？<br>
@@ -166,10 +168,16 @@
       <div class="supporters__grid">
         <!-- カード 1 -->
         <div class="supporter-card">
-          <div class="supporter-card__icon"
-            style="background-color: var(--primary-light); color: var(--primary-color); font-weight: bold; font-family: var(--font-accent);">
-            A</div>
-          <h3 class="supporter-card__title">間借りカフェマスター</h3>
+          <div class="supporter-card__icon">
+            <svg class="supporter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+              <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z" />
+              <line x1="6" y1="2" x2="6" y2="4" />
+              <line x1="10" y1="2" x2="10" y2="4" />
+              <line x1="14" y1="2" x2="14" y2="4" />
+            </svg>
+          </div>
+          <h3 class="supporter-card__title"><span class="nobr">間借りカフェ</span><span class="nobr">マスター</span></h3>
           <span class="supporter-card__badge">キッチンサポーター</span>
           <p class="supporter-card__desc">
             カフェのキッチンを使って、自分のこだわりメニューや得意料理を振る舞うお店を出すことができます。週1日や月数回など、1日4時間から柔軟に営業可能。(時間帯: 10:00〜19:00 ※応相談)
@@ -179,10 +187,15 @@
 
         <!-- カード 2 -->
         <div class="supporter-card">
-          <div class="supporter-card__icon"
-            style="background-color: var(--primary-light); color: var(--primary-color); font-weight: bold; font-family: var(--font-accent);">
-            B</div>
-          <h3 class="supporter-card__title">マルシェメンバーズ</h3>
+          <div class="supporter-card__icon">
+            <svg class="supporter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" />
+              <path d="M3 9l3-6h12l3 6" />
+              <path d="M3 9a3 3 0 0 0 6 0a3 3 0 0 0 6 0a3 3 0 0 0 6 0" />
+              <line x1="12" y1="12" x2="12" y2="18" />
+            </svg>
+          </div>
+          <h3 class="supporter-card__title"><span class="nobr">マルシェ</span><span class="nobr">メンバーズ</span></h3>
           <span class="supporter-card__badge">マルシェサポーター</span>
           <p class="supporter-card__desc">
             毎月行われるお店のスペースを利用したマルシェに出店できます。飲食・クラフト雑貨・占い・リラクゼーション等、様々なジャンルの方を募集中です。(基本土日祝 10:00〜15:00)
@@ -192,10 +205,14 @@
 
         <!-- カード 3 -->
         <div class="supporter-card">
-          <div class="supporter-card__icon"
-            style="background-color: var(--primary-light); color: var(--primary-color); font-weight: bold; font-family: var(--font-accent);">
-            C</div>
-          <h3 class="supporter-card__title">boxshopオーナー</h3>
+          <div class="supporter-card__icon">
+            <svg class="supporter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8" />
+              <rect x="1" y="3" width="22" height="5" />
+              <line x1="10" y1="12" x2="14" y2="12" />
+            </svg>
+          </div>
+          <h3 class="supporter-card__title"><span class="nobr">boxshop</span><span class="nobr">オーナー</span></h3>
           <span class="supporter-card__badge">委託販売サポーター</span>
           <p class="supporter-card__desc">
             棚に並ぶ40cm×40cm×40cmの箱スペースに、あなたが手作りした作品や商品を自由にディスプレイして小さなショップを出店できます。月額利用料2,000円からご利用いただけます。
@@ -205,10 +222,16 @@
 
         <!-- カード 4 -->
         <div class="supporter-card">
-          <div class="supporter-card__icon"
-            style="background-color: var(--primary-light); color: var(--primary-color); font-weight: bold; font-family: var(--font-accent);">
-            D</div>
-          <h3 class="supporter-card__title">菓子製造レンタル</h3>
+          <div class="supporter-card__icon">
+            <svg class="supporter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v10" />
+              <path d="M9 7a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V7z" />
+              <path d="M6 9a6 6 0 0 1 12 0v3a6 6 0 0 1-12 0V9z" />
+              <path d="M12 17v4" />
+              <path d="M8 21h8" />
+            </svg>
+          </div>
+          <h3 class="supporter-card__title"><span class="nobr">菓子製造</span><span class="nobr">レンタル</span></h3>
           <span class="supporter-card__badge">キッチンサポーター</span>
           <p class="supporter-card__desc">
             菓子製造営業許可を取得したキッチンスペースです。テイクアウト用のお菓子の製造・仕込み作業や、マルシェ用の販売商品を効率よく安心して製作することができます。(時間帯要相談)
@@ -382,11 +405,6 @@
         <a href="#contact" class="footer__link">お問い合わせ</a>
         <a href="#" id="js-privacy-trigger" class="footer__link">プライバシーポリシー</a>
       </nav>
-    </div>
-    <div class="container">
-      <p class="footer__copyright" style="font-size: 0.75rem;">
-        Designed by Tentoworks / 水谷順子
-      </p>
     </div>
   </footer>
 
