@@ -183,7 +183,7 @@ async function initMicroCMS() {
       try {
         const publicNews = await fetchFromMicroCMS('news');
         const filteredPublicNews = publicNews.filter(item => item.id !== contentId);
-        
+
         draftNews[0].isDraft = true;
         if (!draftNews[0].date && !draftNews[0].publishedAt) {
           const today = new Date();
@@ -214,7 +214,7 @@ async function initMicroCMS() {
       try {
         const publicMenu = await fetchFromMicroCMS('menu');
         const filteredPublicMenu = publicMenu.filter(item => item.id !== contentId);
-        
+
         draftMenu[0].isDraft = true;
         menu = [...draftMenu, ...filteredPublicMenu];
       } catch (e) {
