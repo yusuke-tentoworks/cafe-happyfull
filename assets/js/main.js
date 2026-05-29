@@ -127,8 +127,8 @@ async function initMicroCMS() {
   const urlParams = new URLSearchParams(window.location.search);
   const contentId = urlParams.get('contentId');
   const draftKey = urlParams.get('draftKey');
-  // プレビューの対象APIエンドポイントを指定（デフォルトはnews）
-  const previewType = urlParams.get('previewType') || 'news';
+  // プレビューの対象APIエンドポイントを指定（未指定の場合は自動判定）
+  const previewType = urlParams.get('previewType');
 
   // Netlify Functions（サーバーレス関数）経由でお知らせとメニューを取得
   let draftNews = null;
