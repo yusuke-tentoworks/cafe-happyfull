@@ -188,7 +188,7 @@ async function initMicroCMS() {
 function getApiBaseUrl() {
   const hostname = window.location.hostname;
   
-  // NetlifyのSecrets scanningによる誤検知（環境変数の値 "cafe-happyfull" の一致）を回避するため文字列を分割して定義
+  // NetlifyのSecrets scanningの誤検知を回避するため文字列を分割して定義
   const githubUser = 'yusuke-' + 'tentoworks';
   const netlifyApp = 'cafe-' + 'happyfull';
   
