@@ -123,9 +123,48 @@ async function initMicroCMS() {
     }
   ];
 
+  // URLからプレビュー用のクエリパラメータを取得
+  const urlParams = new URLSearchParams(window.location.search);
+  const contentId = urlParams.get('contentId');
+  const draftKey = urlParams.get('draftKey');
+
   // Netlify Functions（サーバーレス関数）経由でお知らせとメニューを取得
   try {
-    const news = await fetchFromMicroCMS('news');
+    let news;
+    if (contentId && draftKey) {
+      // プレビューモード（下書き取得）
+      const draftNews = await fetchFromMicroCMS('news', { contentId, draftKey });
+      
+      // 通常の公開済みニュースも取得してマージ
+      try {
+        const publicNews = await fetchFromMicroCMS('news');
+        // 重複（下書き中の記事が既に公開されている場合）を除外
+        const filteredPublicNews = publicNews.filter(item => item.id !== contentId);
+        
+        // 下書きにプレビュー用フラグを付与
+        if (draftNews && draftNews[0]) {
+          draftNews[0].isDraft = true;
+          // 日付が空の場合は今日の日付を設定
+          if (!draftNews[0].date && !draftNews[0].publishedAt) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            draftNews[0].date = `${yyyy}-${mm}-${dd}`;
+          }
+        }
+        news = [...draftNews, ...filteredPublicNews];
+      } catch (e) {
+        // 公開済みの取得に失敗した場合は下書きだけを表示
+        if (draftNews && draftNews[0]) {
+          draftNews[0].isDraft = true;
+        }
+        news = draftNews;
+      }
+    } else {
+      // 通常モード（全公開データ取得）
+      news = await fetchFromMicroCMS('news');
+    }
     renderNews(news);
   } catch (e) {
     console.warn('microCMS News API Fetch Failed. Loading Mock Data instead.', e);
@@ -142,11 +181,29 @@ async function initMicroCMS() {
 }
 
 /**
+ * APIのベースURLを決定する関数
+ * GitHub Pages (yusuke-tentoworks.github.io) やローカル環境では、Netlify上の絶対URLを叩くようにし、
+ * Netlify本番環境では、同一ドメイン内の相対パスで実行する。
+ */
+function getApiBaseUrl() {
+  const hostname = window.location.hostname;
+  if (hostname === 'yusuke-tentoworks.github.io' || hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'https://cafe-happyfull.netlify.app';
+  }
+  return '';
+}
+
+/**
  * Netlify Functionsを介してmicroCMSのデータを取得する共通関数
  */
-async function fetchFromMicroCMS(endpoint) {
-  // 環境に関わらず、常に相対パスのNetlify Functionsエンドポイントを呼び出す
-  const url = `/.netlify/functions/get-microcms-data?endpoint=${endpoint}`;
+async function fetchFromMicroCMS(endpoint, params = {}) {
+  const baseUrl = getApiBaseUrl();
+  let url = `${baseUrl}/.netlify/functions/get-microcms-data?endpoint=${endpoint}`;
+  
+  if (params.contentId && params.draftKey) {
+    url += `&contentId=${params.contentId}&draftKey=${params.draftKey}`;
+  }
+  
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
@@ -170,8 +227,14 @@ function renderNews(newsList) {
     // 独自の日付フィールド(item.date)か、自動付与される公開日(item.publishedAt)を使用
     const rawDate = item.date || item.publishedAt || '';
     const formattedDate = rawDate ? rawDate.substring(0, 10).replace(/-/g, '.') : '';
+    
+    // 下書きプレビュー用のバッジと目立たせるための追加スタイル
+    const draftBadge = item.isDraft ? '<span class="standard-item__badge" style="background-color: #ff8a80 !important; font-size: 0.8rem; margin-bottom: 0.5rem; display: inline-block;">下書きプレビュー</span>' : '';
+    const draftStyle = item.isDraft ? 'border: 2px dashed #ff8a80; padding: 1.2rem; border-radius: 8px; background-color: rgba(255, 138, 128, 0.05);' : '';
+    
     return `
-      <article class="concept__highlight" style="margin-bottom: 1.5rem;">
+      <article class="concept__highlight" style="margin-bottom: 1.5rem; ${draftStyle}">
+        ${draftBadge}
         <span class="standard-item__badge" style="font-size: 0.85rem; margin-bottom: 0.2rem; display: block;">${formattedDate}</span>
         <h4 style="font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--text-dark);">${item.title}</h4>
         <div class="concept__highlight-content" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; line-height: 1.6;">${item.content}</div>
@@ -179,6 +242,7 @@ function renderNews(newsList) {
     `;
   }).join('');
 }
+
 
 /**
  * メニュー（Menu）のHTMLレンダリング

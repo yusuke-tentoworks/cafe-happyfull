@@ -4,7 +4,7 @@
  */
 
 exports.handler = async function(event, context) {
-  const { endpoint } = event.queryStringParameters || {};
+  const { endpoint, contentId, draftKey } = event.queryStringParameters || {};
 
   // エンドポイントパラメータの検証
   if (!endpoint || (endpoint !== 'news' && endpoint !== 'menu')) {
@@ -33,7 +33,11 @@ exports.handler = async function(event, context) {
     };
   }
 
-  const url = `https://${serviceDomain}.microcms.io/api/v1/${endpoint}`;
+  // 下書きプレビュー（draftKeyがある場合）と通常取得でURLを分岐
+  let url = `https://${serviceDomain}.microcms.io/api/v1/${endpoint}`;
+  if (draftKey && contentId) {
+    url = `https://${serviceDomain}.microcms.io/api/v1/${endpoint}/${contentId}?draftKey=${draftKey}`;
+  }
 
   try {
     // Node.js 18+ のネイティブ fetch を利用
@@ -57,13 +61,16 @@ exports.handler = async function(event, context) {
 
     const data = await response.json();
 
+    // プレビュー（個別取得）の場合はオブジェクト単体が返るため、配列形式にして返却することでフロントエンドで扱いやすくする
+    const responseData = (draftKey && contentId) ? [data] : data.contents;
+
     return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify(data.contents) // リスト形式のデータ（contents）のみを返却
+      body: JSON.stringify(responseData)
     };
   } catch (error) {
     return {
@@ -76,3 +83,4 @@ exports.handler = async function(event, context) {
     };
   }
 };
+
