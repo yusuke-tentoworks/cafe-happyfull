@@ -320,6 +320,14 @@ function renderMenu(menuList) {
     const draftBadge = item.isDraft ? '<span class="standard-item__badge" style="background-color: #ff8a80 !important; font-size: 0.8rem; margin-bottom: 0.5rem; display: inline-block;">下書きプレビュー</span>' : '';
     const draftStyle = item.isDraft ? 'border: 2px dashed #ff8a80; padding: 1.2rem; border-radius: 8px; background-color: rgba(255, 138, 128, 0.05);' : '';
 
+    // 価格のフォーマット（数値型の場合に対応し、未入力時は空文字、かつ "500円" のように単位を補う）
+    const formattedPrice = (item.price !== undefined && item.price !== null)
+      ? (String(item.price).endsWith('円') ? item.price : `${item.price}円`)
+      : '';
+
+    // 説明の取得（APIスキーマの description と、モックデータの desc の両方に対応）
+    const menuDesc = item.description || item.desc || '';
+
     return `
       <div class="menu-card" style="${draftStyle}">
         <div class="menu-card__img">
@@ -329,9 +337,9 @@ function renderMenu(menuList) {
           ${draftBadge}
           <div class="menu-card__header">
             <h4 class="menu-card__title">${item.title}</h4>
-            <span class="menu-card__price">${item.price}</span>
+            <span class="menu-card__price">${formattedPrice}</span>
           </div>
-          <p class="menu-card__desc">${item.desc || ''}</p>
+          <p class="menu-card__desc">${menuDesc}</p>
         </div>
       </div>
     `;
