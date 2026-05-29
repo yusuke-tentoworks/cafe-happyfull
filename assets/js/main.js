@@ -54,7 +54,7 @@ function initSmoothScroll() {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
       const targetId = this.getAttribute('href');
-      
+
       // ロゴまたは「#」のみの場合はページ最上部へスムーズスクロール
       if (targetId === '#' || this.id === 'js-logo-top') {
         window.scrollTo({
@@ -63,7 +63,7 @@ function initSmoothScroll() {
         });
         return;
       }
-      
+
       const targetElement = document.querySelector(targetId);
       if (targetElement) {
         const headerOffset = 80;
@@ -127,20 +127,22 @@ async function initMicroCMS() {
   const urlParams = new URLSearchParams(window.location.search);
   const contentId = urlParams.get('contentId');
   const draftKey = urlParams.get('draftKey');
+  // プレビューの対象APIエンドポイントを指定（デフォルトはnews）
+  const previewType = urlParams.get('previewType') || 'news';
 
   // Netlify Functions（サーバーレス関数）経由でお知らせとメニューを取得
   try {
     let news;
-    if (contentId && draftKey) {
-      // プレビューモード（下書き取得）
+    if (contentId && draftKey && previewType === 'news') {
+      // お知らせのプレビューモード（下書き取得）
       const draftNews = await fetchFromMicroCMS('news', { contentId, draftKey });
-      
+
       // 通常の公開済みニュースも取得してマージ
       try {
         const publicNews = await fetchFromMicroCMS('news');
         // 重複（下書き中の記事が既に公開されている場合）を除外
         const filteredPublicNews = publicNews.filter(item => item.id !== contentId);
-        
+
         // 下書きにプレビュー用フラグを付与
         if (draftNews && draftNews[0]) {
           draftNews[0].isDraft = true;
@@ -172,7 +174,33 @@ async function initMicroCMS() {
   }
 
   try {
-    const menu = await fetchFromMicroCMS('menu');
+    let menu;
+    if (contentId && draftKey && previewType === 'menu') {
+      // メニューのプレビューモード（下書き取得）
+      const draftMenu = await fetchFromMicroCMS('menu', { contentId, draftKey });
+
+      // 通常の公開済みメニューも取得してマージ
+      try {
+        const publicMenu = await fetchFromMicroCMS('menu');
+        // 重複（下書き中のメニューが既に公開されている場合）を除外
+        const filteredPublicMenu = publicMenu.filter(item => item.id !== contentId);
+
+        // 下書きにプレビュー用フラグを付与
+        if (draftMenu && draftMenu[0]) {
+          draftMenu[0].isDraft = true;
+        }
+        menu = [...draftMenu, ...filteredPublicMenu];
+      } catch (e) {
+        // 公開済みの取得に失敗した場合は下書きだけを表示
+        if (draftMenu && draftMenu[0]) {
+          draftMenu[0].isDraft = true;
+        }
+        menu = draftMenu;
+      }
+    } else {
+      // 通常モード（全公開データ取得）
+      menu = await fetchFromMicroCMS('menu');
+    }
     renderMenu(menu);
   } catch (e) {
     console.warn('microCMS Menu API Fetch Failed. Loading Mock Data instead.', e);
@@ -187,11 +215,11 @@ async function initMicroCMS() {
  */
 function getApiBaseUrl() {
   const hostname = window.location.hostname;
-  
+
   // NetlifyのSecrets scanningの誤検知を回避するため文字列を分割して定義
   const githubUser = 'yusuke-' + 'tentoworks';
   const netlifyApp = 'cafe-' + 'happyfull';
-  
+
   if (hostname === `${githubUser}.github.io` || hostname === 'localhost' || hostname === '127.0.0.1') {
     return `https://${netlifyApp}.netlify.app`;
   }
@@ -204,11 +232,11 @@ function getApiBaseUrl() {
 async function fetchFromMicroCMS(endpoint, params = {}) {
   const baseUrl = getApiBaseUrl();
   let url = `${baseUrl}/.netlify/functions/get-microcms-data?endpoint=${endpoint}`;
-  
+
   if (params.contentId && params.draftKey) {
     url += `&contentId=${params.contentId}&draftKey=${params.draftKey}`;
   }
-  
+
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
@@ -232,11 +260,11 @@ function renderNews(newsList) {
     // 独自の日付フィールド(item.date)か、自動付与される公開日(item.publishedAt)を使用
     const rawDate = item.date || item.publishedAt || '';
     const formattedDate = rawDate ? rawDate.substring(0, 10).replace(/-/g, '.') : '';
-    
+
     // 下書きプレビュー用のバッジと目立たせるための追加スタイル
     const draftBadge = item.isDraft ? '<span class="standard-item__badge" style="background-color: #ff8a80 !important; font-size: 0.8rem; margin-bottom: 0.5rem; display: inline-block;">下書きプレビュー</span>' : '';
     const draftStyle = item.isDraft ? 'border: 2px dashed #ff8a80; padding: 1.2rem; border-radius: 8px; background-color: rgba(255, 138, 128, 0.05);' : '';
-    
+
     return `
       <article class="concept__highlight" style="margin-bottom: 1.5rem; ${draftStyle}">
         ${draftBadge}
@@ -264,12 +292,18 @@ function renderMenu(menuList) {
   menuContainer.innerHTML = menuList.map(item => {
     // 画像が無い場合のプレースホルダー。microCMSの画像オブジェクト { url: '...' } とモック用文字列の両方に対応
     const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/coffee.png');
+
+    // 下書きプレビュー用のバッジと目立たせるための追加スタイル
+    const draftBadge = item.isDraft ? '<span class="standard-item__badge" style="background-color: #ff8a80 !important; font-size: 0.8rem; margin-bottom: 0.5rem; display: inline-block;">下書きプレビュー</span>' : '';
+    const draftStyle = item.isDraft ? 'border: 2px dashed #ff8a80; padding: 1.2rem; border-radius: 8px; background-color: rgba(255, 138, 128, 0.05);' : '';
+
     return `
-      <div class="menu-card">
+      <div class="menu-card" style="${draftStyle}">
         <div class="menu-card__img">
           <img src="${imageSrc}" alt="${item.title}" loading="lazy">
         </div>
         <div class="menu-card__content">
+          ${draftBadge}
           <div class="menu-card__header">
             <h4 class="menu-card__title">${item.title}</h4>
             <span class="menu-card__price">${item.price}</span>
