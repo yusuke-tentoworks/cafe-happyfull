@@ -424,41 +424,101 @@ p {
   line-height: 1.9;
 }
 
-.concept__highlight {
-  background-color: rgba(122, 178, 182, 0.06);
-  border: 1px solid rgba(122, 178, 182, 0.2);
+/* ==========================================================================
+   News Section (お知らせ)
+   ========================================================================== */
+.news {
+  padding: var(--spacing-xl) 0;
+  background-color: #fff;
+}
+
+.news__wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.news__item.is-hidden {
+  display: none;
+}
+
+.news__item.is-visible {
+  display: block;
+  animation: newsFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes newsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.news__btn-container {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+}
+
+.news__toggle-btn {
+  min-width: 220px;
+  letter-spacing: 0.05em;
+}
+
+.news__item {
+  background-color: var(--card-bg);
+  border: 1px solid rgba(122, 178, 182, 0.12);
   border-left: 4px solid var(--primary-color);
-  padding: 1.2rem;
-  border-radius: var(--border-radius-sm);
+  padding: 1.5rem 2rem;
+  border-radius: var(--border-radius-md);
   margin-bottom: var(--spacing-md);
   transition: var(--transition-smooth);
-  /* はみ出し防止の折り返し設定 */
+  box-shadow: 0 4px 15px rgba(122, 178, 182, 0.02);
   word-break: break-all;
   overflow-wrap: break-word;
 }
 
-.concept__highlight:hover {
-  background-color: rgba(122, 178, 182, 0.1);
+.news__item:hover {
+  background-color: #fff;
   border-color: rgba(122, 178, 182, 0.35);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(122, 178, 182, 0.04);
+  transform: translateY(-3px);
+  box-shadow: var(--box-shadow-hover);
 }
 
-/* お知らせ本文の改行・折り返し設定 */
-.concept__highlight-content {
+.news__item-date {
+  display: inline-block;
+  font-family: var(--font-accent);
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.news__item-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.6rem;
+  color: var(--text-dark);
+  font-family: 'Kiwi Maru', serif;
+}
+
+.news__item-content {
   white-space: pre-wrap;
-  /* \n などの改行コードをそのまま反映 */
   word-break: break-all;
   overflow-wrap: break-word;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.7;
 }
 
 /* microCMSのリッチテキスト（HTMLタグ）が挿入された場合の崩れ防止 */
-.concept__highlight-content h1,
-.concept__highlight-content h2,
-.concept__highlight-content h3,
-.concept__highlight-content h4,
-.concept__highlight-content h5,
-.concept__highlight-content h6 {
+.news__item-content h1,
+.news__item-content h2,
+.news__item-content h3,
+.news__item-content h4,
+.news__item-content h5,
+.news__item-content h6 {
   font-size: 1.1rem !important;
   font-weight: 700;
   color: var(--text-dark) !important;
@@ -468,24 +528,23 @@ p {
   padding: 0 !important;
 }
 
-.concept__highlight-content h1::after,
-.concept__highlight-content h2::after {
+.news__item-content h1::after,
+.news__item-content h2::after {
   display: none !important;
-  /* グローバルの h2::after の下線を消す */
 }
 
-.concept__highlight-content p {
+.news__item-content p {
   margin-bottom: 0.5rem !important;
-  line-height: 1.6 !important;
+  line-height: 1.7 !important;
   font-weight: 500;
   color: var(--text-muted);
 }
 
-.concept__highlight-content p:last-child {
+.news__item-content p:last-child {
   margin-bottom: 0 !important;
 }
 
-.concept__highlight-content img {
+.news__item-content img {
   max-width: 100% !important;
   height: auto !important;
   border-radius: var(--border-radius-sm);

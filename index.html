@@ -34,6 +34,7 @@
       <nav class="nav">
         <ul class="nav__list">
           <li><a href="#about" class="nav__link">はぴふるとは</a></li>
+          <li><a href="#news" class="nav__link">お知らせ</a></li>
           <li><a href="#standards" class="nav__link">こだわり</a></li>
           <li><a href="#supporters" class="nav__link">サポーター募集</a></li>
           <li><a href="#menu" class="nav__link">メニュー</a></li>
@@ -69,7 +70,7 @@
   </section>
 
   <!-- ==========================================
-     About Section (お知らせ ＆ 基本紹介)
+     About Section (基本紹介)
      ========================================== -->
   <section id="about" class="concept">
     <div class="container">
@@ -91,14 +92,24 @@
           <p class="concept__text">
             店内には、ちょっとした仕事や作業ができる<b>コワーキングスペース（6席）</b>も完備しています。
           </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <!-- お知らせエリア (microCMS連携ボード) -->
-          <div class="concept__highlight-wrapper">
-            <h4 style="font-size: 1.1rem; margin-bottom: 0.8rem; color: var(--primary-color);">最新のお知らせ</h4>
-            <div id="js-news-list">
-              <!-- JSでロードされる動的お知らせエリア -->
-            </div>
-          </div>
+  <!-- ==========================================
+     News Section (お知らせ ＆ microCMS連携)
+     ========================================== -->
+  <section id="news" class="news">
+    <div class="container">
+      <h2>最新のお知らせ</h2>
+      <div class="news__wrapper">
+        <div id="js-news-list">
+          <!-- JSでロードされる動的お知らせエリア -->
+        </div>
+        <!-- もっと見る / 閉じる ボタン -->
+        <div class="news__btn-container" id="js-news-btn-container" style="display: none;">
+          <button id="js-news-toggle-btn" class="btn btn-secondary news__toggle-btn">もっと見る</button>
         </div>
       </div>
     </div>
@@ -402,6 +413,7 @@
       </div>
       <nav class="footer__nav">
         <a href="#about" class="footer__link">はぴふるとは</a>
+        <a href="#news" class="footer__link">お知らせ</a>
         <a href="#standards" class="footer__link">こだわり</a>
         <a href="#supporters" class="footer__link">サポーター</a>
         <a href="#menu" class="footer__link">メニュー</a>

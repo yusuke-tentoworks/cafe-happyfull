@@ -272,14 +272,18 @@ async function fetchFromMicroCMS(endpoint, params = {}) {
  */
 function renderNews(newsList) {
   const newsContainer = document.getElementById('js-news-list');
+  const btnContainer = document.getElementById('js-news-btn-container');
+  const toggleBtn = document.getElementById('js-news-toggle-btn');
   if (!newsContainer) return;
 
   if (newsList.length === 0) {
     newsContainer.innerHTML = '<p class="text-muted">現在、新しいお知らせはありません。</p>';
+    if (btnContainer) btnContainer.style.display = 'none';
     return;
   }
 
-  newsContainer.innerHTML = newsList.map(item => {
+  // 1. お知らせカードのHTML描画（3件目以降は .is-hidden を付与）
+  newsContainer.innerHTML = newsList.map((item, index) => {
     // 独自の日付フィールド(item.date)か、自動付与される公開日(item.publishedAt)を使用
     const rawDate = item.date || item.publishedAt || '';
     const formattedDate = rawDate ? rawDate.substring(0, 10).replace(/-/g, '.') : '';
@@ -288,15 +292,69 @@ function renderNews(newsList) {
     const draftBadge = item.isDraft ? '<span class="standard-item__badge" style="background-color: #ff8a80 !important; font-size: 0.8rem; margin-bottom: 0.5rem; display: inline-block;">下書きプレビュー</span>' : '';
     const draftStyle = item.isDraft ? 'border: 2px dashed #ff8a80; padding: 1.2rem; border-radius: 8px; background-color: rgba(255, 138, 128, 0.05);' : '';
 
+    const isHiddenClass = index >= 3 ? 'is-hidden' : '';
+
     return `
-      <article class="concept__highlight" style="margin-bottom: 1.5rem; ${draftStyle}">
+      <article class="news__item ${isHiddenClass}" style="${draftStyle}">
         ${draftBadge}
-        <span class="standard-item__badge" style="font-size: 0.85rem; margin-bottom: 0.2rem; display: block;">${formattedDate}</span>
-        <h4 style="font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--text-dark);">${item.title}</h4>
-        <div class="concept__highlight-content" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; line-height: 1.6;">${item.content}</div>
+        <span class="news__item-date">${formattedDate}</span>
+        <h3 class="news__item-title">${item.title}</h3>
+        <div class="news__item-content">${item.content}</div>
       </article>
     `;
   }).join('');
+
+  // 2. 「もっと見る/折りたたむ」ボタンの制御
+  if (newsList.length > 3 && btnContainer && toggleBtn) {
+    btnContainer.style.display = 'block';
+    
+    // 重複リスナー登録を避けるため、クローンして置き換え
+    const newToggleBtn = toggleBtn.cloneNode(true);
+    toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
+
+    let isOpen = false;
+
+    newToggleBtn.addEventListener('click', () => {
+      const items = newsContainer.querySelectorAll('.news__item');
+      
+      if (!isOpen) {
+        // 展開処理: 3件目以降に .is-visible を追加し、.is-hidden を除去
+        items.forEach((item, index) => {
+          if (index >= 3) {
+            item.classList.remove('is-hidden');
+            item.classList.add('is-visible');
+          }
+        });
+        newToggleBtn.textContent = '折りたたむ';
+        isOpen = true;
+      } else {
+        // 折りたたみ処理: 3件目以降から .is-visible を除去し、.is-hidden を追加
+        items.forEach((item, index) => {
+          if (index >= 3) {
+            item.classList.remove('is-visible');
+            item.classList.add('is-hidden');
+          }
+        });
+        newToggleBtn.textContent = 'もっと見る';
+        isOpen = false;
+
+        // スムーズスクロールで「お知らせ」のトップへ戻る
+        const newsSection = document.getElementById('news');
+        if (newsSection) {
+          const headerOffset = 80;
+          const elementPosition = newsSection.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }
+    });
+  } else {
+    if (btnContainer) btnContainer.style.display = 'none';
+  }
 }
 
 
