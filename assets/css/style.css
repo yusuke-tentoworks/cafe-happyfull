@@ -963,6 +963,52 @@ p {
   color: #fff;
 }
 
+.access__calendar {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+}
+
+.access__calendar-title {
+  font-family: 'Kiwi Maru', serif;
+  font-size: 1.6rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-dark);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
+.access__calendar-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.access__calendar-iframe-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--box-shadow-soft);
+  border: 1px solid var(--border-color);
+}
+
+.access__calendar-iframe-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 /* ==========================================================================
    Contact (Netlify Forms)
    ========================================================================== */
