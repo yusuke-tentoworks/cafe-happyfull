@@ -130,13 +130,14 @@ async function initMicroCMS() {
   // プレビューの対象APIエンドポイントを指定（未指定の場合は自動判定）
   const previewType = urlParams.get('previewType');
 
-  // Netlify Functions（サーバーレス関数）経由でお知らせとメニューを取得
+  // Netlify Functions（サーバーレス関数）経由でお知らせ、メニュー、全体メニューを取得
   let draftNews = null;
   let draftMenu = null;
+  let draftMenuBoard = null;
   let detectedType = previewType;
 
-  // プレビューパラメータがある場合、どちらの下書きかを自動判別または明示取得
-  if (contentId && draftKey) {
+  // プレビューパラメータがある場合、どの下書きかを自動判別または明示取得
+  if (draftKey) {
     if (detectedType === 'menu') {
       try {
         draftMenu = await fetchFromMicroCMS('menu', { contentId, draftKey });
@@ -149,27 +150,53 @@ async function initMicroCMS() {
       } catch (e) {
         console.warn('Failed to fetch draft news', e);
       }
+    } else if (detectedType === 'menu-board') {
+      try {
+        const params = contentId ? { contentId, draftKey } : { draftKey };
+        draftMenuBoard = await fetchFromMicroCMS('menu-board', params);
+      } catch (e) {
+        console.warn('Failed to fetch draft menu board', e);
+      }
     } else {
       // previewType が未指定（または自動判定）の場合
       // 1. まずお知らせでの取得を試みる
       try {
-        const res = await fetchFromMicroCMS('news', { contentId, draftKey });
-        if (res && res.length > 0 && !res.error && res[0] && !res[0].error) {
-          draftNews = res;
-          detectedType = 'news';
+        if (contentId) {
+          const res = await fetchFromMicroCMS('news', { contentId, draftKey });
+          if (res && res.length > 0 && !res.error && res[0] && !res[0].error) {
+            draftNews = res;
+            detectedType = 'news';
+          } else {
+            throw new Error('Not news draft');
+          }
         } else {
-          throw new Error('Not news draft');
+          throw new Error('No contentId for news draft');
         }
       } catch (e) {
         // 2. お知らせで取得できなかった場合はメニューでの取得を試みる
         try {
-          const res = await fetchFromMicroCMS('menu', { contentId, draftKey });
-          if (res && res.length > 0 && !res.error && res[0] && !res[0].error) {
-            draftMenu = res;
-            detectedType = 'menu';
+          if (contentId) {
+            const res = await fetchFromMicroCMS('menu', { contentId, draftKey });
+            if (res && res.length > 0 && !res.error && res[0] && !res[0].error) {
+              draftMenu = res;
+              detectedType = 'menu';
+            } else {
+              throw new Error('Not menu draft');
+            }
+          } else {
+            throw new Error('No contentId for menu draft');
           }
         } catch (err) {
-          console.warn('Failed to auto-detect draft type', err);
+          // 3. メニューでも取得できなかった場合、または contentId が無い場合は全体メニュー(menu-board)の取得を試みる
+          try {
+            const res = await fetchFromMicroCMS('menu-board', { draftKey });
+            if (res && !res.error) {
+              draftMenuBoard = res;
+              detectedType = 'menu-board';
+            }
+          } catch (errBoard) {
+            console.warn('Failed to auto-detect draft type', errBoard);
+          }
         }
       }
     }
@@ -228,6 +255,24 @@ async function initMicroCMS() {
   } catch (e) {
     console.warn('microCMS Menu API Fetch Failed. Loading Mock Data instead.', e);
     renderMenu(mockMenu);
+  }
+
+  // 全体メニュー（Menu Board）のフェッチ
+  try {
+    let menuBoard;
+    if (detectedType === 'menu-board' && draftMenuBoard) {
+      menuBoard = draftMenuBoard;
+      if (Array.isArray(menuBoard)) {
+        if (menuBoard[0]) menuBoard[0].isDraft = true;
+      } else if (menuBoard) {
+        menuBoard.isDraft = true;
+      }
+    } else {
+      menuBoard = await fetchFromMicroCMS('menu-board');
+    }
+    renderMenuBoard(menuBoard);
+  } catch (e) {
+    console.warn('microCMS Menu Board API Fetch Failed. Using default HTML image.', e);
   }
 }
 
@@ -307,7 +352,7 @@ function renderNews(newsList) {
   // 2. 「もっと見る/折りたたむ」ボタンの制御
   if (newsList.length > 3 && btnContainer && toggleBtn) {
     btnContainer.style.display = 'block';
-    
+
     // 重複リスナー登録を避けるため、クローンして置き換え
     const newToggleBtn = toggleBtn.cloneNode(true);
     toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
@@ -316,7 +361,7 @@ function renderNews(newsList) {
 
     newToggleBtn.addEventListener('click', () => {
       const items = newsContainer.querySelectorAll('.news__item');
-      
+
       if (!isOpen) {
         // 展開処理: 3件目以降に .is-visible を追加し、.is-hidden を除去
         items.forEach((item, index) => {
@@ -402,6 +447,51 @@ function renderMenu(menuList) {
       </div>
     `;
   }).join('');
+}
+
+/**
+ * 全体メニュー（Menu Board）の画像レンダリング
+ */
+function renderMenuBoard(data) {
+  const imgElement = document.getElementById('js-menu-board-img');
+  if (!imgElement || !data) return;
+
+  // リスト形式（配列）とオブジェクト形式の両方に対応
+  const item = Array.isArray(data) ? data[0] : data;
+  if (!item) return;
+
+  // 下書きプレビュー用の破線ボーダー処理
+  if (item.isDraft) {
+    const parentContainer = imgElement.closest('.menu__overall-image');
+    if (parentContainer) {
+      parentContainer.style.border = '2px dashed #ff8a80';
+      parentContainer.style.borderRadius = '8px';
+      parentContainer.style.padding = '8px';
+      parentContainer.style.backgroundColor = 'rgba(255, 138, 128, 0.05)';
+
+      // プレビューバッジを追加（すでになければ追加）
+      if (!parentContainer.querySelector('.draft-badge-board')) {
+        const badge = document.createElement('span');
+        badge.className = 'draft-badge-board';
+        badge.innerHTML = '下書きプレビュー';
+        badge.setAttribute('style', 'background-color: #ff8a80 !important; color: #fff; font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; margin-bottom: 0.5rem; display: inline-block; font-weight: bold;');
+        parentContainer.insertBefore(badge, imgElement);
+      }
+    }
+  }
+
+  // 画像オブジェクトまたは文字列URLから画像ソースを取り出す
+  const imageObj = item.image || item.menuImage || item.menu_board_image;
+  let imageUrl = '';
+  if (imageObj && typeof imageObj === 'object') {
+    imageUrl = imageObj.url;
+  } else if (typeof imageObj === 'string') {
+    imageUrl = imageObj;
+  }
+
+  if (imageUrl) {
+    imgElement.src = imageUrl;
+  }
 }
 
 /**
