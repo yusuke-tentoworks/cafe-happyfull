@@ -327,8 +327,11 @@ function renderNews(newsList) {
     return;
   }
 
+  // 表示する最大件数を5件に制限
+  const displayList = newsList.slice(0, 5);
+
   // 1. お知らせカードのHTML描画（3件目以降は .is-hidden を付与）
-  newsContainer.innerHTML = newsList.map((item, index) => {
+  newsContainer.innerHTML = displayList.map((item, index) => {
     // 独自の日付フィールド(item.date)か、自動付与される公開日(item.publishedAt)を使用
     const rawDate = item.date || item.publishedAt || '';
     const formattedDate = rawDate ? rawDate.substring(0, 10).replace(/-/g, '.') : '';
@@ -350,7 +353,7 @@ function renderNews(newsList) {
   }).join('');
 
   // 2. 「もっと見る/折りたたむ」ボタンの制御
-  if (newsList.length > 3 && btnContainer && toggleBtn) {
+  if (displayList.length > 3 && btnContainer && toggleBtn) {
     btnContainer.style.display = 'block';
 
     // 重複リスナー登録を避けるため、クローンして置き換え
