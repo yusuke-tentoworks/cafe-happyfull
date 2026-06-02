@@ -28,9 +28,9 @@ function initMobileMenu() {
         navList.style.top = '80px';
         navList.style.left = '0';
         navList.style.width = '100%';
-        navList.style.backgroundColor = 'rgba(250, 248, 245, 0.95)';
+        navList.style.backgroundColor = 'rgba(244, 241, 222, 0.95)';
         navList.style.padding = '1.5rem';
-        navList.style.borderBottom = '1px solid rgba(122, 178, 182, 0.1)';
+        navList.style.borderBottom = '1px solid rgba(156, 175, 136, 0.1)';
         navList.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)';
       }
     });
