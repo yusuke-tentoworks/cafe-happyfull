@@ -295,17 +295,27 @@ p {
 }
 
 .hero__sub-badge {
-  display: inline-block;
-  background-color: var(--primary-color);
-  color: #fff;
-  padding: 0.4rem 1.2rem;
-  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border: 1px solid rgba(156, 175, 136, 0.4);
+  padding: 0.4rem 1rem;
+  border-radius: var(--border-radius-sm);
   font-weight: 700;
   font-size: 0.85rem;
   margin-bottom: var(--spacing-sm);
   letter-spacing: 0.05em;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+}
+
+.hero__sub-badge::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
 }
 
 .hero__title {
@@ -987,6 +997,14 @@ p {
   width: 60px;
   height: 2px;
   background-color: var(--primary-color);
+}
+
+.access__calendar-note {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .access__calendar-iframe-wrapper {
