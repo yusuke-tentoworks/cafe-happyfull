@@ -9,8 +9,8 @@
 - **顧客名**: カフェ はぴふる (Cafe Happyfull) 代表 水谷 順子 様
 - **プロジェクト担当者**: てんとワークス 井上 裕介 様
 - **納期 / 目標公開日**: **2026年6月19日** (プレオープン: 2026年6月20日・21日、グランドオープン: 2026年7月予定)
-- **本番URL**: [https://cafe-happyfull.netlify.app/](https://cafe-happyfull.netlify.app/)
-- **テスト/ステージングURL**: [https://yusuke-tentoworks.github.io/cafe-happyfull/](https://yusuke-tentoworks.github.io/cafe-happyfull/) (プレビュー環境をGitHub Pagesに統合。Netlifyの無料ビルド時間を節約しながら、下書き記事と公開記事をマージした本番同様のプレビューを実現)
+- **本番URL**: Netlify管理画面をご確認ください
+- **テスト/ステージングURL**: GitHub Pagesのデプロイ先をご確認ください (プレビュー環境をGitHub Pagesに統合。Netlifyの無料ビルド時間を節約しながら、下書き記事と公開記事をマージした本番同様のプレビューを実現)
 
 ---
 
