@@ -38,7 +38,7 @@ function initMobileMenu() {
     // リンククリック時に閉じる
     navList.querySelectorAll('.nav__link').forEach(link => {
       link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 992) {
           navList.style.display = 'none';
         }
       });
