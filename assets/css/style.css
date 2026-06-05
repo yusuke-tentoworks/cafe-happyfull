@@ -1375,6 +1375,11 @@ p {
     min-height: 250px;
   }
 
+  .access__calendar-iframe-wrapper {
+    aspect-ratio: auto;
+    height: 380px;
+  }
+
   .access__table th {
     border-bottom: none;
     padding-bottom: 0;
