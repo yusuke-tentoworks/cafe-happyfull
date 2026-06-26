@@ -260,6 +260,7 @@ async function initMicroCMS() {
   // 営業日カレンダーのフェッチ
   try {
     const calendar = await fetchFromMicroCMS('calendar');
+    console.log('[Calendar] API response:', JSON.stringify(calendar));
     renderCalendar(calendar);
   } catch (e) {
     console.warn('microCMS Calendar API Fetch Failed.', e);
