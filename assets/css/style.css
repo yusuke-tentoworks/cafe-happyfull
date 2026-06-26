@@ -1006,32 +1006,21 @@ p {
   background-color: var(--primary-color);
 }
 
-.access__calendar-note {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
 
-.access__calendar-iframe-wrapper {
-  position: relative;
+.access__calendar-image-wrapper {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  aspect-ratio: 4 / 3;
   border-radius: var(--border-radius-lg);
   overflow: hidden;
   box-shadow: var(--box-shadow-soft);
   border: 1px solid var(--border-color);
 }
 
-.access__calendar-iframe-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
+.access__calendar-image-wrapper img {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 
 /* ==========================================================================
@@ -1373,11 +1362,6 @@ p {
   .access__map,
   .access__map iframe {
     min-height: 250px;
-  }
-
-  .access__calendar-iframe-wrapper {
-    aspect-ratio: auto;
-    height: 380px;
   }
 
   .access__table th {

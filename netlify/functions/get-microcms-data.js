@@ -7,7 +7,7 @@ exports.handler = async function (event, context) {
   const { endpoint, contentId, draftKey } = event.queryStringParameters || {};
 
   // エンドポイントパラメータの検証
-  if (!endpoint || (endpoint !== 'news' && endpoint !== 'menu' && endpoint !== 'menu-board')) {
+  if (!endpoint || (endpoint !== 'news' && endpoint !== 'menu' && endpoint !== 'menu-board' && endpoint !== 'calendar')) {
     return {
       statusCode: 400,
       headers: {

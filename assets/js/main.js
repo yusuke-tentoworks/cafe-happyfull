@@ -257,6 +257,14 @@ async function initMicroCMS() {
     renderMenu(mockMenu);
   }
 
+  // 営業日カレンダーのフェッチ
+  try {
+    const calendar = await fetchFromMicroCMS('calendar');
+    renderCalendar(calendar);
+  } catch (e) {
+    console.warn('microCMS Calendar API Fetch Failed.', e);
+  }
+
   // 全体メニュー（Menu Board）のフェッチ
   try {
     let menuBoard;
@@ -494,6 +502,30 @@ function renderMenuBoard(data) {
 
   if (imageUrl) {
     imgElement.src = imageUrl;
+  }
+}
+
+/**
+ * 営業日カレンダー画像のレンダリング
+ */
+function renderCalendar(data) {
+  const imgElement = document.getElementById('js-calendar-img');
+  if (!imgElement || !data) return;
+
+  const item = Array.isArray(data) ? data[0] : data;
+  if (!item) return;
+
+  const imageObj = item['calendar-image'];
+  let imageUrl = '';
+  if (imageObj && typeof imageObj === 'object') {
+    imageUrl = imageObj.url;
+  } else if (typeof imageObj === 'string') {
+    imageUrl = imageObj;
+  }
+
+  if (imageUrl) {
+    imgElement.src = imageUrl;
+    imgElement.alt = item.title || '営業日カレンダー';
   }
 }
 
