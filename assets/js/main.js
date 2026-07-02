@@ -265,6 +265,15 @@ async function initMicroCMS() {
     console.warn('microCMS Calendar API Fetch Failed.', e);
   }
 
+  // サポーター紹介（Supporter Profiles）のフェッチ
+  try {
+    const supporterProfiles = await fetchFromMicroCMS('supporter-profiles');
+    renderSupporterProfiles(supporterProfiles);
+  } catch (e) {
+    console.warn('microCMS Supporter Profiles API Fetch Failed.', e);
+    renderSupporterProfiles([]);
+  }
+
   // 全体メニュー（Menu Board）のフェッチ
   try {
     let menuBoard;
@@ -527,6 +536,98 @@ function renderCalendar(data) {
     imgElement.src = imageUrl;
     imgElement.alt = item.title || '営業日カレンダー';
   }
+}
+
+/**
+ * SNSリンクのURLをサニタイズする（http/https以外のスキーム（javascript: 等）を除去）
+ */
+function sanitizeSnsUrl(url) {
+  try {
+    const parsed = new URL(String(url), window.location.href);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.href;
+    }
+  } catch (e) {
+    // 不正なURL形式は無視
+  }
+  return '';
+}
+
+/**
+ * HTML属性へ埋め込むための簡易エスケープ
+ */
+function escapeHtmlAttr(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/**
+ * SNSの種類に応じたアイコンSVGを返す
+ */
+function getSnsIcon(platform) {
+  const icons = {
+    'Instagram': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" stroke="none"/></svg>',
+    'X (Twitter)': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>',
+    'Facebook': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 21v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3V2h-3a5 5 0 0 0-5 5v2H7v4h3v8z"/></svg>',
+    'LINE公式アカウント': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="4"/><path d="M8 17v4l4-4"/></svg>',
+    '公式サイト': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></svg>'
+  };
+  return icons[platform] || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+}
+
+/**
+ * サポーター紹介（Supporter Profiles）のHTMLレンダリング
+ */
+function renderSupporterProfiles(profileList) {
+  const container = document.getElementById('js-supporter-profiles-list');
+  if (!container) return;
+
+  if (!Array.isArray(profileList) || profileList.length === 0) {
+    container.innerHTML = '<p class="text-muted" style="grid-column: 1 / -1; text-align: center;">現在、ご紹介できるサポーターを準備中です。</p>';
+    return;
+  }
+
+  container.innerHTML = profileList.map(item => {
+    // 画像オブジェクト { url: '...' } と文字列URLの両方に対応。未設定時はプレースホルダー
+    const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/logo.png');
+
+    // セレクトフィールド（type）は配列で返るため、文字列にも対応させて先頭要素を取り出す
+    const typeValue = Array.isArray(item.type) ? item.type[0] : item.type;
+    const badge = typeValue ? `<span class="supporter-profile-card__badge">${typeValue}</span>` : '';
+
+    // フィールドID: store-name（出店者名）
+    const storeName = item['store-name'] || item.storeName || '';
+    const content = item.content || '';
+
+    // フィールドID: sns（繰り返し。各要素は platform / url を持つ）
+    const snsList = Array.isArray(item.sns) ? item.sns : [];
+    const snsHtml = snsList
+      .map(sns => {
+        const safeUrl = sanitizeSnsUrl(sns && sns.url);
+        if (!safeUrl) return '';
+        const platform = (sns && sns.platform) || 'SNS';
+        return `<a href="${escapeHtmlAttr(safeUrl)}" class="supporter-profile-card__sns-link" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtmlAttr(platform)}" title="${escapeHtmlAttr(platform)}">${getSnsIcon(platform)}</a>`;
+      })
+      .join('');
+    const snsSection = snsHtml ? `<div class="supporter-profile-card__sns">${snsHtml}</div>` : '';
+
+    return `
+      <div class="supporter-profile-card">
+        <div class="supporter-profile-card__img">
+          <img src="${imageSrc}" alt="${storeName}" loading="lazy">
+        </div>
+        <div class="supporter-profile-card__content">
+          ${badge}
+          <h3 class="supporter-profile-card__name">${storeName}</h3>
+          <p class="supporter-profile-card__desc">${content}</p>
+          ${snsSection}
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 /**
