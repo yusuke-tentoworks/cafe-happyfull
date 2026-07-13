@@ -102,12 +102,13 @@
 
 ## 7. ガイドライン遵守状況 (公開前必須)
 各ガイドラインのチェックを済ませたか管理します。
+（スラッシュコマンド `/security-audit` `/seo-check` `/legal-check` `/qa-check` でチェックを実行できます）
 
-- [ ] **[セキュリティ](01_security_guidelines.md)**: パスワード隠匿、WAF、常時SSLリダイレクト
-- [ ] **[SEO・パフォーマンス](02_seo_performance_guidelines.md)**: メタタグ、サイトマップ、OGP、画像最適化
-- [ ] **[コーディング・管理](03_coding_management_guidelines.md)**: フォルダ構成、命名規則、共通パーツ化
-- [ ] **[運用・法務](04_operation_legal_guidelines.md)**: プライバシーポリシー、特商法、バックアップ設定
-- [ ] **[品質保証(QA)](05_quality_assurance_guidelines.md)**: 表示崩れ、リンク、フォーム動作、404ページ
+- [ ] **セキュリティ (`tentoworks-dev-rules/ai-coding-guidelines/01_security_guidelines.md`)**: パスワード隠匿、WAF、常時SSLリダイレクト
+- [ ] **SEO・パフォーマンス (`tentoworks-dev-rules/ai-coding-guidelines/02_seo_performance_guidelines.md`)**: メタタグ、サイトマップ、OGP、画像最適化
+- [ ] **コーディング・管理 (`tentoworks-dev-rules/ai-coding-guidelines/03_coding_management_guidelines.md`)**: フォルダ構成、命名規則、共通パーツ化
+- [ ] **運用・法務 (`tentoworks-dev-rules/ai-coding-guidelines/04_operation_legal_guidelines.md`)**: プライバシーポリシー、特商法、バックアップ設定
+- [ ] **品質保証(QA) (`tentoworks-dev-rules/ai-coding-guidelines/05_quality_assurance_guidelines.md`)**: 表示崩れ、リンク、フォーム動作、404ページ
 
 ---
 
