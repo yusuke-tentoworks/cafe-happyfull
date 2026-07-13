@@ -518,24 +518,38 @@ function renderMenuBoard(data) {
  * 営業日カレンダー画像のレンダリング
  */
 function renderCalendar(data) {
-  const imgElement = document.getElementById('js-calendar-img');
-  if (!imgElement || !data) return;
+  if (!data) return;
 
-  const item = Array.isArray(data) ? data[0] : data;
-  if (!item) return;
+  const items = Array.isArray(data) ? data : [data];
 
-  const imageObj = item['calendar-image'];
-  let imageUrl = '';
-  if (imageObj && typeof imageObj === 'object') {
-    imageUrl = imageObj.url;
-  } else if (typeof imageObj === 'string') {
-    imageUrl = imageObj;
-  }
+  const setCalendarImage = (imgElement, item) => {
+    if (!imgElement) return;
+    const wrapper = imgElement.closest('.access__calendar-image-wrapper');
 
-  if (imageUrl) {
-    imgElement.src = imageUrl;
-    imgElement.alt = item.title || '営業日カレンダー';
-  }
+    if (!item) {
+      if (wrapper) wrapper.style.display = 'none';
+      return;
+    }
+
+    const imageObj = item['calendar-image'];
+    let imageUrl = '';
+    if (imageObj && typeof imageObj === 'object') {
+      imageUrl = imageObj.url;
+    } else if (typeof imageObj === 'string') {
+      imageUrl = imageObj;
+    }
+
+    if (imageUrl) {
+      imgElement.src = imageUrl;
+      imgElement.alt = item.title || '営業日カレンダー';
+      if (wrapper) wrapper.style.display = '';
+    } else if (wrapper) {
+      wrapper.style.display = 'none';
+    }
+  };
+
+  setCalendarImage(document.getElementById('js-calendar-img'), items[0]);
+  setCalendarImage(document.getElementById('js-calendar-img-2'), items[1]);
 }
 
 /**

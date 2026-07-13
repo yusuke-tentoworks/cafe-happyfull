@@ -1142,6 +1142,10 @@ p {
   border: 1px solid var(--border-color);
 }
 
+.access__calendar-image-wrapper + .access__calendar-image-wrapper {
+  margin-top: var(--spacing-lg, 2rem);
+}
+
 .access__calendar-image-wrapper img {
   display: block;
   width: 100%;
