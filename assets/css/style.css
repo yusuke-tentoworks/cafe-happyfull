@@ -1000,6 +1000,17 @@ p {
   margin-bottom: 0.5rem;
 }
 
+.menu-card__store {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  background-color: rgba(0, 0, 0, 0.04);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  margin-bottom: 0.15rem;
+}
+
 .menu-card__title {
   font-size: 1.1rem;
   font-weight: 700;
