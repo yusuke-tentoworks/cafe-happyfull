@@ -37,6 +37,7 @@
           <li><a href="#news" class="nav__link">お知らせ</a></li>
           <li><a href="#standards" class="nav__link">こだわり</a></li>
           <li><a href="#supporters" class="nav__link">サポーター募集</a></li>
+          <li><a href="#kitchen-rental" class="nav__link">レンタルキッチン</a></li>
           <li><a href="#menu" class="nav__link">メニュー</a></li>
           <li><a href="#access" class="nav__link">アクセス</a></li>
           <li><a href="#contact" class="nav__link">お問い合わせ</a></li>
@@ -239,19 +240,17 @@
           <div class="supporter-card__icon">
             <svg class="supporter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2v10" />
-              <path d="M9 7a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V7z" />
-              <path d="M6 9a6 6 0 0 1 12 0v3a6 6 0 0 1-12 0V9z" />
-              <path d="M12 17v4" />
-              <path d="M8 21h8" />
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
           </div>
-          <h3 class="supporter-card__title"><span class="nobr">菓子製造</span><span class="nobr">レンタル</span></h3>
-          <span class="supporter-card__badge">キッチンサポーター</span>
+          <h3 class="supporter-card__title"><span class="nobr">食品の</span><span class="nobr">委託販売（仮）</span></h3>
+          <span class="supporter-card__badge">委託販売サポーター</span>
           <p class="supporter-card__desc">
-            菓子製造営業許可を取得したキッチンスペースです。テイクアウト用のお菓子の製造・仕込み作業や、マルシェ用の販売商品を効率よく安心して製作することができます。(時間帯要相談)
+            ※こちらは仮のコンテンツです。手作りのお菓子や焼き菓子、加工食品などを店頭で委託販売できるサービスを予定しています。詳細は決まり次第ご案内いたします。
           </p>
-          <span class="supporter-card__note">※ケーキや焼き菓子などの製造に幅広くご利用いただけます。</span>
+          <span class="supporter-card__note">※内容は仮のものです。今後変更となる可能性があります。</span>
         </div>
       </div>
 
@@ -279,6 +278,39 @@
 
       <div id="js-supporter-profiles-list" class="supporter-profiles__grid">
         <!-- JS経由でmicroCMSから動的にロードされます -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+     Kitchen Rental Section (菓子製造レンタル / 独立サービス)
+     ========================================== -->
+  <section id="kitchen-rental" class="kitchen-rental">
+    <div class="container">
+      <span class="kitchen-rental__label">小さくお菓子のビジネスを始めたい方へ</span>
+      <h2 class="kitchen-rental__heading"><span class="nobr">レンタル</span><span class="nobr">キッチン</span></h2>
+      <p class="kitchen-rental__intro">
+        個人事業主の方や、これから小さくお菓子づくりの事業を始めたい方に向けて、菓子製造営業許可を取得したキッチンスペースをレンタルしています。自前で設備を持たなくても、テイクアウト用のお菓子の製造・仕込みや、マルシェ・イベント用の販売商品づくりを、低コストで安心してスタートできます。
+      </p>
+
+      <div class="kitchen-rental__inner">
+        <div class="kitchen-rental__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v10" />
+            <path d="M9 7a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V7z" />
+            <path d="M6 9a6 6 0 0 1 12 0v3a6 6 0 0 1-12 0V9z" />
+            <path d="M12 17v4" />
+            <path d="M8 21h8" />
+          </svg>
+        </div>
+        <div class="kitchen-rental__body">
+          <p class="kitchen-rental__desc">
+            ケーキや焼き菓子などの製造に幅広くご利用いただけます。週1日や月数回など、事業の規模やご都合に合わせた無理のない利用が可能です。副業や開業準備の第一歩としてもおすすめです。
+          </p>
+          <span class="kitchen-rental__note">※ご利用の時間帯は要相談です。まずはお気軽にお問い合わせください。</span>
+          <a href="#contact" class="btn btn-secondary">レンタルキッチンについて問い合わせる</a>
+        </div>
       </div>
     </div>
   </section>
@@ -405,6 +437,10 @@
                 boxshop(委託販売)について
               </label>
               <label class="form__checkbox-label">
+                <input type="checkbox" name="categories[]" value="レンタルキッチン(菓子製造)の利用">
+                レンタルキッチン(菓子製造)の利用について
+              </label>
+              <label class="form__checkbox-label">
                 <input type="checkbox" name="categories[]" value="その他">
                 その他
               </label>
@@ -440,6 +476,7 @@
         <a href="#news" class="footer__link">お知らせ</a>
         <a href="#standards" class="footer__link">こだわり</a>
         <a href="#supporters" class="footer__link">サポーター</a>
+        <a href="#kitchen-rental" class="footer__link">レンタルキッチン</a>
         <a href="#menu" class="footer__link">メニュー</a>
         <a href="#access" class="footer__link">アクセス</a>
         <a href="#contact" class="footer__link">お問い合わせ</a>
