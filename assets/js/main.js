@@ -102,23 +102,26 @@ async function initMicroCMS() {
   const mockMenu = [
     {
       id: 'coffee-drip',
-      title: '自家焙煎ハンドドリップコーヒー',
-      price: '500円',
-      desc: '豊川の小さな自家焙煎コーヒー店の豆を厳選し、丁寧にハンドドリップいたします。お好みに合わせた豆をご用意。',
+      'store-name': 'カフェ はぴふる',
+      'product-name': '自家焙煎ハンドドリップコーヒー',
+      price: 500,
+      description: '豊川の小さな自家焙煎コーヒー店の豆を厳選し、丁寧にハンドドリップいたします。お好みに合わせた豆をご用意。',
       image: 'assets/images/coffee.png'
     },
     {
       id: 'cinnamon-roll',
-      title: '手作り北欧風シナモンロール',
-      price: '380円',
-      desc: '生地にカルダモンを贅沢に練り込んだ、北欧スウェーデンの本格的な味覚をお楽しみいただけます。コーヒーとの相性抜群です。',
+      'store-name': 'カフェ はぴふる',
+      'product-name': '手作り北欧風シナモンロール',
+      price: 380,
+      description: '生地にカルダモンを贅沢に練り込んだ、北欧スウェーデンの本格的な味覚をお楽しみいただけます。コーヒーとの相性抜群です。',
       image: 'assets/images/cinnamon.png'
     },
     {
       id: 'cafe-au-lait',
-      title: 'カフェオレ',
-      price: '550円',
-      desc: '深煎りの自家焙煎コーヒーに、たっぷりの温かいミルクを注ぎました。まろやかで優しい味わいです。',
+      'store-name': 'カフェ はぴふる',
+      'product-name': 'カフェオレ',
+      price: 550,
+      description: '深煎りの自家焙煎コーヒーに、たっぷりの温かいミルクを注ぎました。まろやかで優しい味わいです。',
       image: '' // 画像なしのフォールバック
     }
   ];
@@ -451,15 +454,23 @@ function renderMenu(menuList) {
     // 説明の取得（APIスキーマの description と、モックデータの desc の両方に対応）
     const menuDesc = item.description || item.desc || '';
 
+    // 商品名の取得（新スキーマの product-name と、旧モックデータの title の両方に対応）
+    const productName = item['product-name'] || item.title || '';
+
+    // 店名の取得（新スキーマの store-name。未入力時はラベルを出さない）
+    const storeName = item['store-name'] || '';
+    const storeLabel = storeName ? `<span class="menu-card__store">${storeName}</span>` : '';
+
     return `
       <div class="menu-card" style="${draftStyle}">
         <div class="menu-card__img">
-          <img src="${imageSrc}" alt="${item.title}" loading="lazy">
+          <img src="${imageSrc}" alt="${productName}" loading="lazy">
         </div>
         <div class="menu-card__content">
           ${draftBadge}
           <div class="menu-card__header">
-            <h4 class="menu-card__title">${item.title}</h4>
+            ${storeLabel}
+            <h4 class="menu-card__title">${productName}</h4>
             <span class="menu-card__price">${formattedPrice}</span>
           </div>
           <p class="menu-card__desc">${menuDesc}</p>
