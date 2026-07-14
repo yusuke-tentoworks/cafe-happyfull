@@ -234,6 +234,8 @@ p {
   font-weight: 700;
   color: var(--primary-color);
   font-family: var(--font-base);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .header__logo-img {
@@ -247,7 +249,10 @@ p {
 
 .nav__list {
   display: flex;
-  gap: 2rem;
+  align-items: center;
+  flex-wrap: nowrap;
+  /* 画面幅に応じて間隔を可変にし、中間幅での折り返しと窮屈さを防ぐ */
+  gap: clamp(0.9rem, 1.6vw, 2rem);
 }
 
 .nav__link {
@@ -255,6 +260,7 @@ p {
   font-size: 0.95rem;
   position: relative;
   padding: 0.5rem 0;
+  white-space: nowrap;
 }
 
 .nav__link::after {
@@ -1336,8 +1342,11 @@ p {
 
 .footer__container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  /* リンク群がブランド横に収まらない場合はブロックごと次の行へ落とす */
+  row-gap: var(--spacing-sm);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: var(--spacing-md);
   margin-bottom: var(--spacing-md);
@@ -1357,8 +1366,18 @@ p {
 }
 
 .footer__nav {
+  /* 余った横幅を使い切って全リンクを1行に収める。
+     ブランド横に入りきらないときは(コンテナのwrapにより)ブロックごと次の行へ */
+  flex: 1 1 auto;
   display: flex;
-  gap: 1.5rem;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: clamp(0.8rem, 1.3vw, 1.2rem);
+}
+
+.footer__link {
+  white-space: nowrap;
 }
 
 .footer__link:hover {
@@ -1421,6 +1440,17 @@ p {
 /* ==========================================================================
    Responsive Settings
    ========================================================================== */
+/* 1080px以下ではヘッダーメニューが窮屈になるため、早めにハンバーガーへ切り替える */
+@media (max-width: 1080px) {
+  .nav__list {
+    display: none;
+  }
+
+  .nav__toggle {
+    display: block;
+  }
+}
+
 @media (max-width: 992px) {
   h2 {
     font-size: 1.8rem;
@@ -1447,15 +1477,7 @@ p {
     gap: var(--spacing-md);
   }
 
-  /* 992px以下でヘッダーメニューをハンバーガーメニューに切り替え、フッターもスリム化 */
-  .nav__list {
-    display: none;
-  }
-
-  .nav__toggle {
-    display: block;
-  }
-
+  /* 992px以下でフッターをスリム化(ヘッダーは1080pxで既にハンバーガー化済み) */
   .footer__container {
     flex-direction: column;
     gap: var(--spacing-md);
