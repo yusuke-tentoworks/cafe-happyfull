@@ -338,9 +338,10 @@
       <h2>メニュー</h2>
 
       <div class="menu__cms-board">
-        <!-- 全体メニュー画像プレースホルダー -->
-        <div class="menu__overall-image">
-          <img id="js-menu-board-img" src="assets/images/hero-bg.png" alt="カフェはぴふる 全体メニュー">
+        <!-- 全体メニュー画像プレースホルダー（microCMSから取得） -->
+        <div id="js-menu-board" class="menu__overall-image is-empty">
+          <img id="js-menu-board-img" alt="カフェはぴふる 全体メニュー" hidden>
+          <p id="js-menu-board-fallback" class="menu__overall-message">メニューを読み込んでいます…</p>
         </div>
 
         <!-- 個別メニューリスト -->

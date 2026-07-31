@@ -3,6 +3,9 @@
  * Main JavaScript (Smooth scroll, dynamic microCMS fetch, and forms)
  */
 
+// 全体メニュー画像がmicroCMSから取得できなかった場合に表示するテキスト
+const MENU_BOARD_ERROR_TEXT = 'メニューの読み込みに失敗しました。お手数ですが、時間をおいて再度ご確認ください。';
+
 document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initSmoothScroll();
@@ -292,7 +295,8 @@ async function initMicroCMS() {
     }
     renderMenuBoard(menuBoard);
   } catch (e) {
-    console.warn('microCMS Menu Board API Fetch Failed. Using default HTML image.', e);
+    console.warn('microCMS Menu Board API Fetch Failed.', e);
+    renderMenuBoard(null);
   }
 }
 
@@ -484,12 +488,26 @@ function renderMenu(menuList) {
  * 全体メニュー（Menu Board）の画像レンダリング
  */
 function renderMenuBoard(data) {
+  const container = document.getElementById('js-menu-board');
   const imgElement = document.getElementById('js-menu-board-img');
-  if (!imgElement || !data) return;
+  const messageElement = document.getElementById('js-menu-board-fallback');
+  if (!container || !imgElement || !messageElement) return;
+
+  // 画像が取得・表示できなかった場合は、ダミー画像ではなくテキストで状況を伝える
+  const showMessage = () => {
+    imgElement.hidden = true;
+    imgElement.removeAttribute('src');
+    messageElement.textContent = MENU_BOARD_ERROR_TEXT;
+    messageElement.hidden = false;
+    container.classList.add('is-empty');
+  };
 
   // リスト形式（配列）とオブジェクト形式の両方に対応
   const item = Array.isArray(data) ? data[0] : data;
-  if (!item) return;
+  if (!item) {
+    showMessage();
+    return;
+  }
 
   // 下書きプレビュー用の破線ボーダー処理
   if (item.isDraft) {
@@ -520,9 +538,17 @@ function renderMenuBoard(data) {
     imageUrl = imageObj;
   }
 
-  if (imageUrl) {
-    imgElement.src = imageUrl;
+  if (!imageUrl) {
+    showMessage();
+    return;
   }
+
+  // 画像URL自体の読み込みに失敗した場合もテキスト表示に切り替える
+  imgElement.onerror = showMessage;
+  imgElement.src = imageUrl;
+  imgElement.hidden = false;
+  messageElement.hidden = true;
+  container.classList.remove('is-empty');
 }
 
 /**

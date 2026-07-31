@@ -1084,6 +1084,29 @@ p {
   width: 100%;
 }
 
+.menu__overall-image img[hidden] {
+  display: none;
+}
+
+/* 全体メニュー画像が未取得のときは、枠を控えめにしてテキストのみを見せる */
+.menu__overall-image.is-empty {
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.menu__overall-message {
+  margin: 0;
+  padding: var(--spacing-md) var(--spacing-sm);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+.menu__overall-message[hidden] {
+  display: none;
+}
+
 .menu__list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
