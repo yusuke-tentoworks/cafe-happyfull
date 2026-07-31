@@ -296,7 +296,7 @@ p {
   align-items: center;
   /* ヘッダーの高さ(80px)分の上部余白を確保し、コンテンツの潜り込みを防ぐ */
   padding: 120px 0 80px;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.85)), url('../images/hero-bg.png');
+  background-image: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.85)), url('../images/hero-photo.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: scroll;
@@ -444,6 +444,31 @@ p {
   color: var(--text-muted);
   margin-bottom: var(--spacing-md);
   line-height: 1.9;
+}
+
+.concept__gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.concept__gallery-item {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--box-shadow-soft);
+}
+
+.concept__gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+}
+
+.concept__gallery-item:hover img {
+  transform: scale(1.05);
 }
 
 /* ==========================================================================
@@ -694,6 +719,20 @@ p {
   transform: translateY(-5px);
   box-shadow: 0 20px 45px rgba(156, 175, 136, 0.09);
   border-color: rgba(156, 175, 136, 0.4);
+}
+
+.supporter-card__photo {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  margin-bottom: var(--spacing-sm);
+}
+
+.supporter-card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .supporter-card__icon {
