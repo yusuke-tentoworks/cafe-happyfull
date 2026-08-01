@@ -296,7 +296,7 @@ p {
   align-items: center;
   /* ヘッダーの高さ(80px)分の上部余白を確保し、コンテンツの潜り込みを防ぐ */
   padding: 120px 0 80px;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.85)), url('../images/hero-photo.jpg');
+  background-image: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.85)), url('../images/hero-photo.webp');
   background-size: cover;
   background-position: center;
   background-attachment: scroll;

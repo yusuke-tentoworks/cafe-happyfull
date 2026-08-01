@@ -109,7 +109,7 @@ async function initMicroCMS() {
       'product-name': '自家焙煎ハンドドリップコーヒー',
       price: 500,
       description: '豊川の小さな自家焙煎コーヒー店の豆を厳選し、丁寧にハンドドリップいたします。お好みに合わせた豆をご用意。',
-      image: 'assets/images/coffee.png'
+      image: 'assets/images/coffee.webp'
     },
     {
       id: 'cinnamon-roll',
@@ -117,7 +117,7 @@ async function initMicroCMS() {
       'product-name': '手作り北欧風シナモンロール',
       price: 380,
       description: '生地にカルダモンを贅沢に練り込んだ、北欧スウェーデンの本格的な味覚をお楽しみいただけます。コーヒーとの相性抜群です。',
-      image: 'assets/images/cinnamon.png'
+      image: 'assets/images/cinnamon.webp'
     },
     {
       id: 'cafe-au-lait',
@@ -444,7 +444,7 @@ function renderMenu(menuList) {
 
   menuContainer.innerHTML = menuList.map(item => {
     // 画像が無い場合のプレースホルダー。microCMSの画像オブジェクト { url: '...' } とモック用文字列の両方に対応
-    const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/coffee.png');
+    const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/coffee.webp');
 
     // 下書きプレビュー用のバッジと目立たせるための追加スタイル
     const draftBadge = item.isDraft ? '<span class="standard-item__badge" style="background-color: #ff8a80 !important; font-size: 0.8rem; margin-bottom: 0.5rem; display: inline-block;">下書きプレビュー</span>' : '';
@@ -643,7 +643,7 @@ function renderSupporterProfiles(profileList) {
 
   container.innerHTML = profileList.map(item => {
     // 画像オブジェクト { url: '...' } と文字列URLの両方に対応。未設定時はプレースホルダー
-    const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/logo.png');
+    const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/logo-square.webp');
 
     // セレクトフィールド（type）は配列で返るため、文字列にも対応させて先頭要素を取り出す
     const typeValue = Array.isArray(item.type) ? item.type[0] : item.type;
