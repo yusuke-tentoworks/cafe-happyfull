@@ -798,6 +798,15 @@ p {
   border-color: rgba(156, 175, 136, 0.4);
 }
 
+/* 準備中のサービスは、空状態（.empty-state）と同じ破線で
+   「まだ利用できない」ことを見た目でも区別する */
+.supporter-card--preparing {
+  border-style: dashed;
+  border-color: rgba(156, 175, 136, 0.4);
+  background-color: rgba(156, 175, 136, 0.04);
+  box-shadow: none;
+}
+
 .supporter-card__icon {
   width: 56px;
   height: 56px;
