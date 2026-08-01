@@ -346,7 +346,11 @@
       <div class="menu__cms-board">
         <!-- 全体メニュー画像プレースホルダー（microCMSから取得） -->
         <div id="js-menu-board" class="menu__overall-image is-empty">
-          <img id="js-menu-board-img" alt="カフェはぴふる 全体メニュー" hidden>
+          <button type="button" id="js-menu-board-trigger" class="menu__overall-trigger" hidden
+            aria-label="メニュー表を拡大して表示する">
+            <img id="js-menu-board-img" alt="カフェはぴふる 全体メニュー" hidden>
+            <span class="menu__overall-zoom">拡大して見る</span>
+          </button>
           <p id="js-menu-board-fallback" class="menu__overall-message">メニューを読み込んでいます…</p>
         </div>
 
@@ -510,6 +514,22 @@
       </nav>
     </div>
   </footer>
+
+  <!-- ==========================================
+     Menu Board Lightbox (メニュー表の拡大表示)
+     ========================================== -->
+  <div id="js-menu-lightbox" class="lightbox">
+    <div class="lightbox__overlay" id="js-menu-lightbox-overlay"></div>
+    <div class="lightbox__panel" role="dialog" aria-modal="true" aria-label="メニュー表の拡大表示">
+      <div class="lightbox__bar">
+        <button type="button" id="js-menu-lightbox-close" class="lightbox__close" aria-label="閉じる">&times;</button>
+      </div>
+      <div class="lightbox__scroll">
+        <img id="js-menu-lightbox-img" src="" alt="">
+      </div>
+      <p class="lightbox__hint">左右にスワイプすると全体をご覧いただけます</p>
+    </div>
+  </div>
 
   <!-- ==========================================
      Privacy Policy Modal (モーダル)

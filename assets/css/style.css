@@ -1136,6 +1136,47 @@ p {
   display: none;
 }
 
+/* メニュー表は画像内に文字が入っており、SPでは原寸の約14%まで縮むため拡大手段を用意する */
+.menu__overall-trigger {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.menu__overall-trigger[hidden] {
+  display: none;
+}
+
+/* 画像に重ねると入稿内容によっては本文（税込表記など）を隠してしまうため、
+   画像の下に帯として置く */
+.menu__overall-zoom {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background-color: var(--primary-light);
+  color: var(--primary-deep);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  border-top: 1px solid rgba(156, 175, 136, 0.25);
+  transition: var(--transition-smooth);
+}
+
+.menu__overall-trigger:hover .menu__overall-zoom {
+  background-color: var(--primary-deep);
+  color: #fff;
+}
+
+.menu__overall-trigger:focus-visible {
+  outline: 3px solid var(--primary-deep);
+  outline-offset: 3px;
+}
+
 /* 全体メニュー画像が未取得のときは、枠を控えめにしてテキストのみを見せる */
 .menu__overall-image.is-empty {
   border-style: dashed;
@@ -1812,6 +1853,111 @@ p {
   .access__table td {
     padding-top: 0.2rem;
     padding-bottom: 1rem;
+  }
+}
+
+/* ==========================================================================
+   Lightbox (メニュー表の拡大表示)
+   ========================================================================== */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.lightbox.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lightbox__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(62, 71, 73, 0.78);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.lightbox__panel {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  width: 94%;
+  max-width: 1400px;
+  max-height: 92vh;
+}
+
+.lightbox__bar {
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.lightbox__close {
+  font-size: 2.4rem;
+  line-height: 1;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--border-radius-sm);
+}
+
+.lightbox__close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* 画像は縮小せず、はみ出した分をスクロールで見せる。
+   画面に収めてしまうとSPでは文字が読めないため */
+.lightbox__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--border-radius-md);
+  background-color: #fff;
+}
+
+.lightbox__scroll img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.lightbox__hint {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* SPでは幅に合わせず高さ基準で拡大し、横スクロールで読ませる */
+  .lightbox__scroll img {
+    max-width: none;
+    width: auto;
+    height: 78vh;
+  }
+
+  .lightbox__hint {
+    display: block;
+    flex-shrink: 0;
+    margin: 0.7rem 0 0;
+    text-align: center;
+    color: #fff;
+    font-size: 0.8rem;
   }
 }
 

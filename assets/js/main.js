@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSmoothScroll();
   initMicroCMS();
   initPrivacyModal();
+  initMenuLightbox();
 });
 
 /**
@@ -453,7 +454,10 @@ function renderMenu(menuList) {
 
   menuContainer.innerHTML = menuList.map(item => {
     // 画像が無い場合のプレースホルダー。microCMSの画像オブジェクト { url: '...' } とモック用文字列の両方に対応
-    const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/coffee.webp');
+    const rawImage = (item.image && typeof item.image === 'object') ? item.image.url : item.image;
+    const hasImage = !!rawImage;
+    // カードの表示サイズは約280x200。Retina想定で2倍の600pxに抑える
+    const imageSrc = hasImage ? withImageParams(rawImage, 600) : 'assets/images/coffee.webp';
 
     // 下書きプレビュー用のバッジと目立たせるための追加スタイル
     const draftBadge = item.isDraft ? '<span class="standard-item__badge" style="background-color: #ff8a80 !important; font-size: 0.8rem; margin-bottom: 0.5rem; display: inline-block;">下書きプレビュー</span>' : '';
@@ -474,10 +478,15 @@ function renderMenu(menuList) {
     const storeName = item['store-name'] || '';
     const storeLabel = storeName ? `<span class="menu-card__store">${storeName}</span>` : '';
 
+    // 掲載しているのは商品ではなく豆の提供元（焙煎所）の店舗外観のため、
+    // altは商品名ではなく写っているものを説明する。
+    // プレースホルダー画像に差し替わった場合は店舗写真ではないので商品名を使う
+    const imageAlt = (hasImage && storeName) ? `${storeName}の店舗外観` : productName;
+
     return `
       <div class="menu-card" style="${draftStyle}">
         <div class="menu-card__img">
-          <img src="${imageSrc}" alt="${productName}" loading="lazy">
+          <img src="${imageSrc}" alt="${escapeHtmlAttr(imageAlt)}" loading="lazy">
         </div>
         <div class="menu-card__content">
           ${draftBadge}
@@ -499,6 +508,7 @@ function renderMenu(menuList) {
 function renderMenuBoard(data) {
   const container = document.getElementById('js-menu-board');
   const imgElement = document.getElementById('js-menu-board-img');
+  const trigger = document.getElementById('js-menu-board-trigger');
   const messageElement = document.getElementById('js-menu-board-fallback');
   if (!container || !imgElement || !messageElement) return;
 
@@ -506,6 +516,7 @@ function renderMenuBoard(data) {
   const showMessage = () => {
     imgElement.hidden = true;
     imgElement.removeAttribute('src');
+    if (trigger) trigger.hidden = true;
     messageElement.textContent = MENU_BOARD_ERROR_TEXT;
     messageElement.hidden = false;
     container.classList.add('is-empty');
@@ -531,9 +542,10 @@ function renderMenuBoard(data) {
       if (!parentContainer.querySelector('.draft-badge-board')) {
         const badge = document.createElement('span');
         badge.className = 'draft-badge-board';
-        badge.innerHTML = '下書きプレビュー';
+        badge.textContent = '下書きプレビュー';
         badge.setAttribute('style', 'background-color: #ff8a80 !important; color: #fff; font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; margin-bottom: 0.5rem; display: inline-block; font-weight: bold;');
-        parentContainer.insertBefore(badge, imgElement);
+        // 画像は拡大用ボタンの内側にあるため、コンテナ先頭へ挿入する
+        parentContainer.prepend(badge);
       }
     }
   }
@@ -554,10 +566,60 @@ function renderMenuBoard(data) {
 
   // 画像URL自体の読み込みに失敗した場合もテキスト表示に切り替える
   imgElement.onerror = showMessage;
-  imgElement.src = imageUrl;
+  // ページ内の表示幅は最大800px。Retina想定で2倍の1600pxに抑える
+  imgElement.src = withImageParams(imageUrl, 1600);
   imgElement.hidden = false;
+  if (trigger) {
+    // 拡大表示では文字を読ませるため、より大きい版を使う
+    trigger.dataset.zoomSrc = withImageParams(imageUrl, 2200);
+    trigger.hidden = false;
+  }
   messageElement.hidden = true;
   container.classList.remove('is-empty');
+}
+
+/**
+ * 5. メニュー表の拡大表示（ライトボックス）
+ * メニュー表は画像内に価格などの文字が入っており、SPでは原寸の約14%まで
+ * 縮小されて判読できないため、拡大して読める手段を用意する
+ */
+function initMenuLightbox() {
+  const trigger = document.getElementById('js-menu-board-trigger');
+  const lightbox = document.getElementById('js-menu-lightbox');
+  const overlay = document.getElementById('js-menu-lightbox-overlay');
+  const closeBtn = document.getElementById('js-menu-lightbox-close');
+  const zoomImg = document.getElementById('js-menu-lightbox-img');
+  const boardImg = document.getElementById('js-menu-board-img');
+
+  if (!trigger || !lightbox || !overlay || !closeBtn || !zoomImg) return;
+
+  const scrollArea = lightbox.querySelector('.lightbox__scroll');
+
+  const open = () => {
+    zoomImg.src = trigger.dataset.zoomSrc || (boardImg && boardImg.src) || '';
+    zoomImg.alt = (boardImg && boardImg.alt) || 'メニュー表';
+    lightbox.classList.add('is-active');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  };
+
+  const close = () => {
+    lightbox.classList.remove('is-active');
+    document.body.style.overflow = '';
+    // 次に開いたときに前回のスクロール位置が残らないようにする
+    if (scrollArea) scrollArea.scrollTo(0, 0);
+    trigger.focus();
+  };
+
+  trigger.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', close);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('is-active')) {
+      close();
+    }
+  });
 }
 
 /**
@@ -586,7 +648,8 @@ function renderCalendar(data) {
     }
 
     if (imageUrl) {
-      imgElement.src = imageUrl;
+      // 表示幅は最大800px。Retina想定で2倍の1600pxに抑える
+      imgElement.src = withImageParams(imageUrl, 1600);
       imgElement.alt = item.title || '営業日カレンダー';
       if (wrapper) wrapper.style.display = '';
     } else if (wrapper) {
@@ -616,6 +679,32 @@ function sanitizeSnsUrl(url) {
 /**
  * HTML属性へ埋め込むための簡易エスケープ
  */
+/**
+ * microCMSの画像URLに変換パラメータを付与して転送量を抑える。
+ * 入稿された原寸（数千px・数MB）をそのまま配信すると表示サイズに対して過大なため、
+ * 表示幅の約2倍を上限として配信する。
+ * microCMS以外のURL（ローカルのプレースホルダー等）はそのまま返す。
+ */
+function withImageParams(url, width, quality = 80) {
+  if (!url || typeof url !== 'string') return url;
+  if (!url.includes('images.microcms-assets.io')) return url;
+
+  try {
+    const parsed = new URL(url);
+    parsed.searchParams.set('fm', 'webp');
+    parsed.searchParams.set('w', String(width));
+    // fit=max を付けないと、原寸が指定幅より小さい画像が引き伸ばされ
+    // かえって重くなる（例: 1080px の画像が w=1600 で 73KB → 192KB）。
+    // 指定幅は「上限」として扱い、拡大はさせない
+    parsed.searchParams.set('fit', 'max');
+    parsed.searchParams.set('q', String(quality));
+    return parsed.toString();
+  } catch (e) {
+    // URLとして解釈できない場合は加工せずそのまま使う
+    return url;
+  }
+}
+
 function escapeHtmlAttr(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -652,7 +741,9 @@ function renderSupporterProfiles(profileList) {
 
   container.innerHTML = profileList.map(item => {
     // 画像オブジェクト { url: '...' } と文字列URLの両方に対応。未設定時はプレースホルダー
-    const imageSrc = (item.image && typeof item.image === 'object') ? item.image.url : (item.image || 'assets/images/logo-square.webp');
+    const rawImage = (item.image && typeof item.image === 'object') ? item.image.url : item.image;
+    // カードの表示サイズは約280x200。Retina想定で2倍の600pxに抑える
+    const imageSrc = rawImage ? withImageParams(rawImage, 600) : 'assets/images/logo-square.webp';
 
     // セレクトフィールド（type）は配列で返るため、文字列にも対応させて先頭要素を取り出す
     const typeValue = Array.isArray(item.type) ? item.type[0] : item.type;
