@@ -437,8 +437,10 @@ p {
   align-items: center;
 }
 
+/* こだわりセクションと比率をそろえ、写真の扱いをページ全体で統一する */
 .concept__image {
   position: relative;
+  aspect-ratio: 1 / 1;
   border-radius: var(--border-radius-lg);
   overflow: hidden;
   box-shadow: var(--box-shadow-soft);
@@ -446,7 +448,10 @@ p {
 
 .concept__image img {
   width: 100%;
+  height: 100%;
   object-fit: cover;
+  /* 入口の看板とカウンターを残すため、上寄りで切り出す */
+  object-position: center 38%;
   transition: var(--transition-smooth);
 }
 
@@ -482,9 +487,11 @@ p {
   line-height: 1.9;
 }
 
+/* 写真は10枚。auto-fill だと幅によって6列＋4列のような欠けた行が出るため、
+   10を割り切れる列数(5列 / 2列)だけを使って必ず行が埋まるようにする */
 .concept__gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--spacing-sm);
   margin-top: var(--spacing-lg);
 }
@@ -664,18 +671,37 @@ p {
   order: 2;
 }
 
+/* 素材の比率が縦(3:4)と正方形で混在しているため、正方形に統一する。
+   max-height での切り落としは下端が問答無用で切れるため object-fit で制御する */
 .standard-item__image {
+  position: relative;
+  aspect-ratio: 1 / 1;
   border-radius: var(--border-radius-lg);
   overflow: hidden;
   box-shadow: var(--box-shadow-soft);
-  max-height: 450px;
 }
 
 .standard-item__image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* 実写とストック調で発色差が大きいため、彩度をわずかに揃える */
+  filter: saturate(0.9);
   transition: var(--transition-smooth);
+}
+
+/* こだわり01は縦写真。中央基準だとソーサーが切れるため被写体側へ寄せる */
+.standards__grid > .standard-item:first-child .standard-item__image img {
+  object-position: center 75%;
+}
+
+/* ベージュの薄いヴェールを共通で重ね、写真同士のトーンを一段そろえる */
+.standard-item__image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(244, 241, 222, 0.12);
+  pointer-events: none;
 }
 
 .standard-item:hover .standard-item__image img {
@@ -1664,6 +1690,11 @@ p {
 
   .concept__title {
     font-size: 1.6rem;
+  }
+
+  /* SPは5列だとサムネイルが小さすぎるため2列(5行)に切り替える */
+  .concept__gallery {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .news, .standards, .supporters, .menu-section, .access, .contact {
