@@ -9,6 +9,10 @@
 
   <title>まちのリビング カフェ はぴふる (Cafe Happyfull)</title>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+
   <!-- OGP & Brand Assets -->
   <meta property="og:title" content="まちのリビング カフェ はぴふる (Cafe Happyfull)">
   <meta property="og:description" content="だれでもほっと落ち着ける居場所を、いっしょに作りませんか？豊川プリオビル2階に新登場。">
@@ -318,11 +322,11 @@
         <div class="kitchen-rental__icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2v10" />
-            <path d="M9 7a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0V7z" />
-            <path d="M6 9a6 6 0 0 1 12 0v3a6 6 0 0 1-12 0V9z" />
-            <path d="M12 17v4" />
-            <path d="M8 21h8" />
+            <!-- オーブン。菓子製造ができるキッチンであることを示す -->
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <line x1="3" y1="9.5" x2="21" y2="9.5" />
+            <line x1="6.5" y1="6.75" x2="10" y2="6.75" />
+            <rect x="7" y="12.5" width="10" height="5" rx="1" />
           </svg>
         </div>
         <div class="kitchen-rental__body">
@@ -496,22 +500,22 @@
      Footer
      ========================================== -->
   <footer class="footer">
-    <div class="container footer__container">
-      <div class="footer__brand">
-        カフェ はぴふる
-        <span>© 2026 Cafe Happyfull. All Rights Reserved.</span>
+    <div class="container">
+      <div class="footer__container">
+        <div class="footer__brand">カフェ はぴふる</div>
+        <nav class="footer__nav">
+          <a href="#about" class="footer__link">はぴふるとは</a>
+          <a href="#news" class="footer__link">お知らせ</a>
+          <a href="#standards" class="footer__link">こだわり</a>
+          <a href="#supporters" class="footer__link">サポーター</a>
+          <a href="#kitchen-rental" class="footer__link">レンタルキッチン</a>
+          <a href="#menu" class="footer__link">メニュー</a>
+          <a href="#access" class="footer__link">アクセス</a>
+          <a href="#contact" class="footer__link">お問い合わせ</a>
+          <a href="#" id="js-privacy-trigger" class="footer__link">プライバシーポリシー</a>
+        </nav>
       </div>
-      <nav class="footer__nav">
-        <a href="#about" class="footer__link">はぴふるとは</a>
-        <a href="#news" class="footer__link">お知らせ</a>
-        <a href="#standards" class="footer__link">こだわり</a>
-        <a href="#supporters" class="footer__link">サポーター</a>
-        <a href="#kitchen-rental" class="footer__link">レンタルキッチン</a>
-        <a href="#menu" class="footer__link">メニュー</a>
-        <a href="#access" class="footer__link">アクセス</a>
-        <a href="#contact" class="footer__link">お問い合わせ</a>
-        <a href="#" id="js-privacy-trigger" class="footer__link">プライバシーポリシー</a>
-      </nav>
+      <p class="footer__copyright">© 2026 Cafe Happyfull. All Rights Reserved.</p>
     </div>
   </footer>
 

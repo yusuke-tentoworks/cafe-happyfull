@@ -155,6 +155,21 @@ h2::after {
   opacity: 0.85;
 }
 
+/* CMSにデータが無いときの空状態。全体メニュー画像の未取得時（破線枠）と
+   見た目をそろえ、「準備中」であることが伝わるようにする */
+.empty-state {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: var(--spacing-md) var(--spacing-sm);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.9;
+  background-color: rgba(156, 175, 136, 0.05);
+  border: 1px dashed rgba(156, 175, 136, 0.35);
+  border-radius: var(--border-radius-md);
+}
+
 .section-subtitle {
   text-align: center;
   font-size: 1rem;
@@ -917,7 +932,8 @@ p {
 
 .kitchen-rental__inner {
   display: flex;
-  align-items: center;
+  /* 中央揃えだと本文が長いぶんアイコンだけ下に沈み、左上に大きな余白ができる */
+  align-items: flex-start;
   gap: var(--spacing-lg);
   max-width: 900px;
   margin: 0 auto;
@@ -1512,12 +1528,6 @@ p {
   color: var(--primary-on-dark);
 }
 
-.footer__brand span {
-  display: block;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 400;
-}
 
 .footer__nav {
   /* 余った横幅を使い切って全リンクを1行に収める。
@@ -1532,6 +1542,8 @@ p {
 
 .footer__link {
   white-space: nowrap;
+  /* タップ領域を44px程度確保する */
+  padding: 0.5rem 0;
 }
 
 .footer__link:hover {
@@ -1541,7 +1553,8 @@ p {
 .footer__copyright {
   text-align: center;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 0;
 }
 
 /* ==========================================================================
@@ -1564,6 +1577,26 @@ p {
   box-shadow: var(--box-shadow-soft);
   max-width: 600px;
   width: 100%;
+}
+
+/* 送信完了ページは単独で表示されるため、最低限のブランド表示を置く */
+.thanks-card__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary-deep);
+  margin-bottom: var(--spacing-md);
+}
+
+.thanks-card__brand-img {
+  height: 40px;
+  width: 40px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 1px solid rgba(156, 175, 136, 0.2);
+  background-color: #fff;
 }
 
 .thanks-card__icon {

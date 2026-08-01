@@ -356,7 +356,7 @@ function renderNews(newsList) {
   if (!newsContainer) return;
 
   if (newsList.length === 0) {
-    newsContainer.innerHTML = '<p class="text-muted">現在、新しいお知らせはありません。</p>';
+    newsContainer.innerHTML = '<p class="empty-state">現在、新しいお知らせはありません。</p>';
     if (btnContainer) btnContainer.style.display = 'none';
     return;
   }
@@ -448,7 +448,7 @@ function renderMenu(menuList) {
   if (!menuContainer) return;
 
   if (menuList.length === 0) {
-    menuContainer.innerHTML = '<p class="text-muted">メニューを準備中です。</p>';
+    menuContainer.innerHTML = '<p class="empty-state">メニューを準備中です。</p>';
     return;
   }
 
@@ -736,7 +736,7 @@ function renderSupporterProfiles(profileList) {
   if (!container) return;
 
   if (!Array.isArray(profileList) || profileList.length === 0) {
-    container.innerHTML = '<p class="text-muted" style="grid-column: 1 / -1; text-align: center;">現在、ご紹介できるサポーターを準備中です。</p>';
+    container.innerHTML = '<p class="empty-state">現在、ご紹介できるサポーターを準備中です。</p>';
     return;
   }
 
