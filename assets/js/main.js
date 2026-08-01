@@ -333,10 +333,13 @@ function getApiBaseUrl() {
  */
 async function fetchFromMicroCMS(endpoint, params = {}) {
   const baseUrl = getApiBaseUrl();
-  let url = `${baseUrl}/.netlify/functions/get-microcms-data?endpoint=${endpoint}`;
+  // URLパラメータは必ずエンコードする。
+  // 未エンコードだと値に含まれる & や = がクエリの区切りとして解釈され、
+  // 意図しないパラメータをサーバーレス関数へ渡せてしまう
+  let url = `${baseUrl}/.netlify/functions/get-microcms-data?endpoint=${encodeURIComponent(endpoint)}`;
 
   if (params.contentId && params.draftKey) {
-    url += `&contentId=${params.contentId}&draftKey=${params.draftKey}`;
+    url += `&contentId=${encodeURIComponent(params.contentId)}&draftKey=${encodeURIComponent(params.draftKey)}`;
   }
 
   const response = await fetch(url);
@@ -379,9 +382,9 @@ function renderNews(newsList) {
     return `
       <article class="news__item ${isHiddenClass}" style="${draftStyle}">
         ${draftBadge}
-        <span class="news__item-date">${formattedDate}</span>
-        <h3 class="news__item-title">${item.title}</h3>
-        <div class="news__item-content">${item.content}</div>
+        <span class="news__item-date">${escapeHtml(formattedDate)}</span>
+        <h3 class="news__item-title">${escapeHtml(item.title)}</h3>
+        <div class="news__item-content">${escapeHtml(item.content)}</div>
       </article>
     `;
   }).join('');
@@ -477,7 +480,7 @@ function renderMenu(menuList) {
 
     // 店名の取得（新スキーマの store-name。未入力時はラベルを出さない）
     const storeName = item['store-name'] || '';
-    const storeLabel = storeName ? `<span class="menu-card__store">${storeName}</span>` : '';
+    const storeLabel = storeName ? `<span class="menu-card__store">${escapeHtml(storeName)}</span>` : '';
 
     // 掲載しているのは商品ではなく豆の提供元（焙煎所）の店舗外観のため、
     // altは商品名ではなく写っているものを説明する。
@@ -487,16 +490,16 @@ function renderMenu(menuList) {
     return `
       <div class="menu-card" style="${draftStyle}">
         <div class="menu-card__img">
-          <img src="${imageSrc}" alt="${escapeHtmlAttr(imageAlt)}" loading="lazy">
+          <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(imageAlt)}" loading="lazy">
         </div>
         <div class="menu-card__content">
           ${draftBadge}
           <div class="menu-card__header">
             ${storeLabel}
-            <h4 class="menu-card__title">${productName}</h4>
-            <span class="menu-card__price">${formattedPrice}</span>
+            <h4 class="menu-card__title">${escapeHtml(productName)}</h4>
+            <span class="menu-card__price">${escapeHtml(formattedPrice)}</span>
           </div>
-          <p class="menu-card__desc">${menuDesc}</p>
+          <p class="menu-card__desc">${escapeHtml(menuDesc)}</p>
         </div>
       </div>
     `;
@@ -706,10 +709,18 @@ function withImageParams(url, width, quality = 80) {
   }
 }
 
-function escapeHtmlAttr(str) {
+/**
+ * microCMSから受け取った値をHTMLに埋め込む前にエスケープする。
+ * 本サイトではCMSにHTMLを入力しない運用のため、テキスト・属性値ともに
+ * すべてこの関数を通し、タグとして解釈される余地をなくす。
+ * （リッチテキストを扱う場合はエスケープではなくサニタイズが必要になる）
+ */
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
@@ -748,7 +759,7 @@ function renderSupporterProfiles(profileList) {
 
     // セレクトフィールド（type）は配列で返るため、文字列にも対応させて先頭要素を取り出す
     const typeValue = Array.isArray(item.type) ? item.type[0] : item.type;
-    const badge = typeValue ? `<span class="supporter-profile-card__badge">${typeValue}</span>` : '';
+    const badge = typeValue ? `<span class="supporter-profile-card__badge">${escapeHtml(typeValue)}</span>` : '';
 
     // フィールドID: store-name（出店者名）
     const storeName = item['store-name'] || item.storeName || '';
@@ -761,7 +772,7 @@ function renderSupporterProfiles(profileList) {
         const safeUrl = sanitizeSnsUrl(sns && sns.url);
         if (!safeUrl) return '';
         const platform = (sns && sns.platform) || 'SNS';
-        return `<a href="${escapeHtmlAttr(safeUrl)}" class="supporter-profile-card__sns-link" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtmlAttr(platform)}" title="${escapeHtmlAttr(platform)}">${getSnsIcon(platform)}</a>`;
+        return `<a href="${escapeHtml(safeUrl)}" class="supporter-profile-card__sns-link" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(platform)}" title="${escapeHtml(platform)}">${getSnsIcon(platform)}</a>`;
       })
       .join('');
     const snsSection = snsHtml ? `<div class="supporter-profile-card__sns">${snsHtml}</div>` : '';
@@ -769,12 +780,12 @@ function renderSupporterProfiles(profileList) {
     return `
       <div class="supporter-profile-card">
         <div class="supporter-profile-card__img">
-          <img src="${imageSrc}" alt="${storeName}" loading="lazy">
+          <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(storeName)}" loading="lazy">
         </div>
         <div class="supporter-profile-card__content">
           ${badge}
-          <h3 class="supporter-profile-card__name">${storeName}</h3>
-          <p class="supporter-profile-card__desc">${content}</p>
+          <h3 class="supporter-profile-card__name">${escapeHtml(storeName)}</h3>
+          <p class="supporter-profile-card__desc">${escapeHtml(content)}</p>
           ${snsSection}
         </div>
       </div>

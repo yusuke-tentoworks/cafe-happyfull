@@ -618,45 +618,6 @@ p {
   line-height: 1.7;
 }
 
-/* microCMSのリッチテキスト（HTMLタグ）が挿入された場合の崩れ防止 */
-.news__item-content h1,
-.news__item-content h2,
-.news__item-content h3,
-.news__item-content h4,
-.news__item-content h5,
-.news__item-content h6 {
-  font-size: 1.1rem !important;
-  font-weight: 700;
-  color: var(--text-dark) !important;
-  margin: 0.8rem 0 0.4rem 0 !important;
-  text-align: left !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-.news__item-content h1::after,
-.news__item-content h2::after {
-  display: none !important;
-}
-
-.news__item-content p {
-  margin-bottom: 0.5rem !important;
-  line-height: 1.7 !important;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.news__item-content p:last-child {
-  margin-bottom: 0 !important;
-}
-
-.news__item-content img {
-  max-width: 100% !important;
-  height: auto !important;
-  border-radius: var(--border-radius-sm);
-  margin: 0.5rem 0;
-}
-
 /* ==========================================================================
    Our Standards (こだわり)
    ========================================================================== */
