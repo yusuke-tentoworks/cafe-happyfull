@@ -469,7 +469,8 @@ function renderMenu(menuList) {
       : '';
 
     // 説明の取得（APIスキーマの description と、モックデータの desc の両方に対応）
-    const menuDesc = item.description || item.desc || '';
+    // 改行を表示に反映する（white-space: pre-wrap）ため、前後の余分な改行は落としておく
+    const menuDesc = String(item.description || item.desc || '').trim();
 
     // 商品名の取得（新スキーマの product-name と、旧モックデータの title の両方に対応）
     const productName = item['product-name'] || item.title || '';

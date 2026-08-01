@@ -1270,10 +1270,12 @@ p {
   font-size: 1.05rem;
 }
 
+/* お知らせ・サポーター紹介と同様に、microCMSで入力された改行を反映する */
 .menu-card__desc {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-bottom: 0;
+  white-space: pre-wrap;
 }
 
 /* ==========================================================================
