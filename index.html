@@ -32,7 +32,7 @@
         カフェ はぴふる
       </a>
       <nav class="nav">
-        <ul class="nav__list">
+        <ul class="nav__list" id="js-nav-list">
           <li><a href="#about" class="nav__link">はぴふるとは</a></li>
           <li><a href="#news" class="nav__link">お知らせ</a></li>
           <li><a href="#standards" class="nav__link">こだわり</a></li>
@@ -43,7 +43,15 @@
           <li><a href="#contact" class="nav__link">お問い合わせ</a></li>
         </ul>
       </nav>
-      <div class="nav__toggle">☰</div>
+      <button type="button" class="nav__toggle" id="js-nav-toggle" aria-controls="js-nav-list" aria-expanded="false"
+        aria-label="メニューを開く">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" aria-hidden="true" focusable="false">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -426,12 +434,12 @@
           <input type="hidden" name="form-name" value="contact">
 
           <div class="form__group">
-            <label for="name" class="form__label">お名前 <span style="color: var(--secondary-color);">*</span></label>
+            <label for="name" class="form__label">お名前 <span style="color: var(--secondary-deep);">*</span></label>
             <input type="text" id="name" name="name" class="form__input" placeholder="山田 太郎" required>
           </div>
 
           <div class="form__group">
-            <label for="email" class="form__label">メールアドレス <span style="color: var(--secondary-color);">*</span></label>
+            <label for="email" class="form__label">メールアドレス <span style="color: var(--secondary-deep);">*</span></label>
             <input type="email" id="email" name="email" class="form__input" placeholder="example@email.com" required>
           </div>
 
@@ -467,7 +475,7 @@
 
           <div class="form__group">
             <label for="message" class="form__label">お問い合わせ内容 <span
-                style="color: var(--secondary-color);">*</span></label>
+                style="color: var(--secondary-deep);">*</span></label>
             <textarea id="message" name="message" rows="6" class="form__textarea"
               placeholder="ご希望の出店形態や、ご質問・ご相談内容を自由に入力してください。" required></textarea>
           </div>

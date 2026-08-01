@@ -20,33 +20,42 @@ function initMobileMenu() {
   const toggleBtn = document.querySelector('.nav__toggle');
   const navList = document.querySelector('.nav__list');
 
-  if (toggleBtn && navList) {
-    toggleBtn.addEventListener('click', () => {
-      const isVisible = navList.style.display === 'flex';
-      navList.style.display = isVisible ? 'none' : 'flex';
-      // モバイル用の簡易トグルアニメーション
-      if (!isVisible) {
-        navList.style.flexDirection = 'column';
-        navList.style.position = 'absolute';
-        navList.style.top = '80px';
-        navList.style.left = '0';
-        navList.style.width = '100%';
-        navList.style.backgroundColor = 'rgba(244, 241, 222, 0.95)';
-        navList.style.padding = '1.5rem';
-        navList.style.borderBottom = '1px solid rgba(156, 175, 136, 0.1)';
-        navList.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)';
-      }
-    });
+  if (!toggleBtn || !navList) return;
 
-    // リンククリック時に閉じる
-    navList.querySelectorAll('.nav__link').forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 992) {
-          navList.style.display = 'none';
-        }
-      });
-    });
-  }
+  // 開閉状態はクラスのみで管理する。
+  // インラインstyleで display を書き込むと、PC幅に戻したときに
+  // メディアクエリより優先されてナビゲーションが消えてしまうため。
+  const setMenuState = (isOpen) => {
+    navList.classList.toggle('is-open', isOpen);
+    toggleBtn.setAttribute('aria-expanded', String(isOpen));
+    toggleBtn.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+  };
+
+  const closeMenu = () => setMenuState(false);
+
+  toggleBtn.addEventListener('click', () => {
+    setMenuState(!navList.classList.contains('is-open'));
+  });
+
+  // リンク選択時は常に閉じる。
+  // PC幅では .is-open 自体が効かないため、幅の判定は不要。
+  navList.querySelectorAll('.nav__link').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // メニュー外のタップ / Escape でも閉じる
+  document.addEventListener('click', (e) => {
+    if (!navList.classList.contains('is-open')) return;
+    if (navList.contains(e.target) || toggleBtn.contains(e.target)) return;
+    closeMenu();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navList.classList.contains('is-open')) {
+      closeMenu();
+      toggleBtn.focus();
+    }
+  });
 }
 
 /**

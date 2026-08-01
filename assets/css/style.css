@@ -6,11 +6,17 @@
 :root {
   /* Brand Colors (Nordic-inspired gentle palette) */
   --primary-color: #9caf88;
-  /* Gentle sage green */
+  /* Gentle sage green（面・罫・アイコンなど装飾用） */
+  --primary-deep: #5e7048;
+  /* 濃いセージ。文字・ボタン等コントラストが要る箇所はこちらを使う（白地/ベージュ地で4.5:1以上） */
+  --primary-on-dark: #b9c9a7;
+  /* 濃色背景（フッター）に載せるセージ */
   --primary-light: #f3f6f1;
   /* Very soft primary tint */
   --secondary-color: #ffca4b;
-  /* Soft warm amber / Yellow */
+  /* Soft warm amber / Yellow（面用。上に載せる文字は --text-dark） */
+  --secondary-deep: #8a6100;
+  /* 濃いアンバー。淡い背景に文字として置く場合はこちら */
   --secondary-light: #fff9eb;
   /* Light accent tint */
   --bg-color: #f4f1de;
@@ -19,8 +25,8 @@
   /* Pure white for cards */
   --text-dark: #3e4749;
   /* Deep slate (softer than black) */
-  --text-muted: #727e80;
-  /* Muted grey */
+  --text-muted: #5f6b6d;
+  /* Muted grey（白地・ベージュ地の双方で4.5:1以上） */
   --border-color: #e1e7e8;
   /* Subtle warm borders */
 
@@ -152,7 +158,7 @@ h2::after {
 .section-subtitle {
   text-align: center;
   font-size: 1rem;
-  color: var(--primary-color);
+  color: var(--primary-deep);
   font-weight: 500;
   margin-bottom: 0.3rem;
   letter-spacing: 0.1em;
@@ -173,12 +179,12 @@ p {
 .btn {
   display: inline-block;
   padding: 1.1rem 2.8rem;
-  background: linear-gradient(135deg, var(--primary-color) 0%, #859771 100%);
+  background: linear-gradient(135deg, var(--primary-deep) 0%, #4e5f3b 100%);
   color: #fff;
   border-radius: 50px;
   font-weight: 500;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(156, 175, 136, 0.25);
+  box-shadow: 0 4px 15px rgba(94, 112, 72, 0.25);
   transition: var(--transition-smooth);
   cursor: pointer;
   border: 1px solid transparent;
@@ -186,21 +192,24 @@ p {
 
 .btn:hover {
   background: #fff;
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+  color: var(--primary-deep);
+  border-color: var(--primary-deep);
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(156, 175, 136, 0.15);
+  box-shadow: 0 8px 25px rgba(94, 112, 72, 0.15);
 }
 
+/* アンバーは面として明るいままにし、載せる文字を濃色にしてコントラストを確保する */
 .btn-secondary {
   background: linear-gradient(135deg, var(--secondary-color) 0%, #e6b135 100%);
+  color: var(--text-dark);
+  font-weight: 700;
   box-shadow: 0 4px 15px rgba(255, 202, 75, 0.25);
 }
 
 .btn-secondary:hover {
   background: #fff;
-  color: var(--secondary-color);
-  border-color: var(--secondary-color);
+  color: var(--secondary-deep);
+  border-color: var(--secondary-deep);
 }
 
 /* ==========================================================================
@@ -232,7 +241,7 @@ p {
   gap: 0.8rem;
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--primary-deep);
   font-family: var(--font-base);
   white-space: nowrap;
   flex-shrink: 0;
@@ -270,12 +279,12 @@ p {
   left: 0;
   width: 0;
   height: 2px;
-  background-color: var(--primary-color);
+  background-color: var(--primary-deep);
   transition: var(--transition-smooth);
 }
 
 .nav__link:hover {
-  color: var(--primary-color);
+  color: var(--primary-deep);
 }
 
 .nav__link:hover::after {
@@ -284,9 +293,23 @@ p {
 
 .nav__toggle {
   display: none;
-  font-size: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
-  color: var(--primary-color);
+  color: var(--primary-deep);
+  border-radius: var(--border-radius-sm);
+}
+
+.nav__toggle svg {
+  width: 26px;
+  height: 26px;
+}
+
+.nav__toggle:focus-visible {
+  outline: 2px solid var(--primary-deep);
+  outline-offset: 2px;
 }
 
 .hero {
@@ -296,10 +319,26 @@ p {
   align-items: center;
   /* ヘッダーの高さ(80px)分の上部余白を確保し、コンテンツの潜り込みを防ぐ */
   padding: 120px 0 80px;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.85)), url('../images/hero-photo.webp');
+  /* 文字が乗る左寄りだけを楕円状にふわりと持ち上げ、外側へ向けて完全な透明まで落とす。
+     輪郭を持たないため写真と地続きに見え、パネルのように浮かない。
+     0.9以上の帯がテキスト右端(画面幅の約58%)を確実に覆うよう停止位置を調整している */
+  background-image:
+    radial-gradient(78% 85% at 26% 50%,
+      rgba(249, 246, 235, 0.95) 0%,
+      rgba(249, 246, 235, 0.91) 45%,
+      rgba(249, 246, 235, 0.5) 70%,
+      rgba(249, 246, 235, 0.12) 88%,
+      rgba(249, 246, 235, 0) 100%),
+    linear-gradient(rgba(244, 241, 222, 0.18), rgba(244, 241, 222, 0.06)),
+    url('../images/hero-photo.webp');
   background-size: cover;
   background-position: center;
   background-attachment: scroll;
+}
+
+/* flexアイテムは内容幅に縮むため、明示しないと左揃えが崩れる */
+.hero__container {
+  width: 100%;
 }
 
 .hero__content {
@@ -312,7 +351,7 @@ p {
   align-items: center;
   gap: 0.5rem;
   background-color: var(--primary-light);
-  color: var(--primary-color);
+  color: var(--primary-deep);
   border: 1px solid rgba(156, 175, 136, 0.4);
   padding: 0.4rem 1rem;
   border-radius: var(--border-radius-sm);
@@ -327,7 +366,7 @@ p {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background-color: var(--primary-color);
+  background-color: var(--primary-deep);
   border-radius: 50%;
 }
 
@@ -344,7 +383,6 @@ p {
   letter-spacing: 0.15em;
   margin-bottom: 0.5rem;
   font-family: 'Kiwi Maru', serif;
-  text-shadow: 0 0 10px rgba(244, 241, 222, 0.8);
 }
 
 .hero__title-main {
@@ -354,7 +392,6 @@ p {
   color: var(--text-dark);
   letter-spacing: 0.05em;
   font-family: 'Kiwi Maru', serif;
-  text-shadow: 0 0 15px rgba(244, 241, 222, 0.9), 0 0 5px rgba(244, 241, 222, 0.9);
 }
 
 .hero__description {
@@ -364,7 +401,6 @@ p {
   margin-bottom: var(--spacing-md);
   font-family: 'Zen Maru Gothic', sans-serif;
   font-weight: 500;
-  text-shadow: 0 0 10px rgba(244, 241, 222, 0.9), 0 0 4px rgba(244, 241, 222, 0.9);
 }
 
 .hero__buttons {
@@ -538,7 +574,7 @@ p {
 .news__item-date {
   display: inline-block;
   font-family: var(--font-accent);
-  color: var(--primary-color);
+  color: var(--primary-deep);
   font-weight: 700;
   font-size: 0.9rem;
   margin-bottom: 0.4rem;
@@ -649,7 +685,7 @@ p {
 .standard-item__badge {
   display: inline-block;
   font-family: var(--font-accent);
-  color: var(--primary-color);
+  color: var(--primary-deep);
   font-weight: 700;
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
@@ -729,7 +765,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
+  color: var(--primary-deep);
   margin: 0 auto var(--spacing-sm) auto;
   padding: 14px;
   border: 1px solid rgba(156, 175, 136, 0.15);
@@ -737,10 +773,10 @@ p {
 }
 
 .supporter-card:hover .supporter-card__icon {
-  background-color: var(--primary-color);
+  background-color: var(--primary-deep);
   color: #fff;
   transform: rotate(-6deg) scale(1.08);
-  border-color: var(--primary-color);
+  border-color: var(--primary-deep);
   box-shadow: 0 8px 20px rgba(156, 175, 136, 0.2);
 }
 
@@ -766,7 +802,7 @@ p {
 .supporter-card__badge {
   display: inline-block;
   background-color: var(--secondary-light);
-  color: var(--secondary-color);
+  color: var(--secondary-deep);
   font-size: 0.8rem;
   font-weight: 600;
   padding: 0.15rem 0.6rem;
@@ -836,7 +872,7 @@ p {
 .kitchen-rental__label {
   display: table;
   margin: 0 auto var(--spacing-sm) auto;
-  background-color: var(--primary-color);
+  background-color: var(--primary-deep);
   color: #fff;
   font-size: 0.85rem;
   font-weight: 600;
@@ -875,7 +911,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
+  color: var(--primary-deep);
   padding: 22px;
   border: 1px solid rgba(156, 175, 136, 0.15);
 }
@@ -975,7 +1011,7 @@ p {
   display: inline-block;
   align-self: flex-start;
   background-color: var(--secondary-light);
-  color: var(--secondary-color);
+  color: var(--secondary-deep);
   font-size: 0.8rem;
   font-weight: 600;
   padding: 0.15rem 0.6rem;
@@ -1017,7 +1053,7 @@ p {
   justify-content: center;
   padding: 8px;
   background-color: var(--primary-light);
-  color: var(--primary-color);
+  color: var(--primary-deep);
   border-radius: 50%;
   border: 1px solid rgba(156, 175, 136, 0.15);
   transition: var(--transition-smooth);
@@ -1029,9 +1065,9 @@ p {
 }
 
 .supporter-profile-card__sns-link:hover {
-  background-color: var(--primary-color);
+  background-color: var(--primary-deep);
   color: #fff;
-  border-color: var(--primary-color);
+  border-color: var(--primary-deep);
   transform: translateY(-2px);
 }
 
@@ -1145,7 +1181,7 @@ p {
   display: inline-block;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--primary-deep);
   background-color: rgba(0, 0, 0, 0.04);
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
@@ -1161,7 +1197,7 @@ p {
 }
 
 .menu-card__price {
-  color: var(--primary-color);
+  color: var(--primary-deep);
   font-weight: 700;
   font-family: var(--font-accent);
   font-size: 1.05rem;
@@ -1246,14 +1282,14 @@ p {
   align-items: center;
   gap: 0.5rem;
   background-color: var(--primary-light);
-  color: var(--primary-color);
+  color: var(--primary-deep);
   padding: 0.6rem 1.5rem;
   border-radius: 50px;
   font-weight: 600;
 }
 
 .access__sns-link:hover {
-  background-color: var(--primary-color);
+  background-color: var(--primary-deep);
   color: #fff;
 }
 
@@ -1349,8 +1385,8 @@ p {
 .form__select:focus,
 .form__textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 4px rgba(156, 175, 136, 0.12);
+  border-color: var(--primary-deep);
+  box-shadow: 0 0 0 4px rgba(94, 112, 72, 0.15);
 }
 
 .form__checkbox-group {
@@ -1370,7 +1406,7 @@ p {
 .form__checkbox-label input {
   width: 18px;
   height: 18px;
-  accent-color: var(--primary-color);
+  accent-color: var(--primary-deep);
 }
 
 .form__submit-btn {
@@ -1400,10 +1436,11 @@ p {
   margin-bottom: var(--spacing-md);
 }
 
+/* フッターは濃色背景のため、通常のセージでは暗すぎる。明るいセージを使う */
 .footer__brand {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--primary-on-dark);
 }
 
 .footer__brand span {
@@ -1429,7 +1466,7 @@ p {
 }
 
 .footer__link:hover {
-  color: var(--primary-color);
+  color: var(--primary-on-dark);
 }
 
 .footer__copyright {
@@ -1464,7 +1501,7 @@ p {
   width: 80px;
   height: 80px;
   background-color: var(--primary-light);
-  color: var(--primary-color);
+  color: var(--primary-deep);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1495,7 +1532,33 @@ p {
   }
 
   .nav__toggle {
+    display: inline-flex;
+  }
+
+  /* 開閉はJSのインラインstyleではなくクラスで行う。
+     PC幅ではこのルール自体が効かないため、幅を戻したときにナビが消えることがない */
+  .nav__list.is-open {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    z-index: 1001;
+    /* 背面のヒーロー文字が透けないよう不透明にする */
+    background-color: var(--bg-color);
+    padding: 1.5rem var(--spacing-md);
+    gap: 0.25rem;
+    border-bottom: 1px solid rgba(156, 175, 136, 0.2);
+    box-shadow: 0 12px 24px rgba(62, 71, 73, 0.08);
+  }
+
+  .nav__list.is-open .nav__link {
     display: block;
+    width: 100%;
+    padding: 0.75rem 0;
+    font-size: 1.05rem;
   }
 }
 
@@ -1541,6 +1604,19 @@ p {
 @media (max-width: 768px) {
   .sp-only {
     display: none;
+  }
+
+  /* SPは本文が全幅になるため、楕円の中心を画面中央へ寄せて全体を包む */
+  .hero {
+    background-image:
+      radial-gradient(120% 70% at 50% 46%,
+        rgba(249, 246, 235, 0.95) 0%,
+        rgba(249, 246, 235, 0.9) 55%,
+        rgba(249, 246, 235, 0.45) 82%,
+        rgba(249, 246, 235, 0) 100%),
+      linear-gradient(rgba(244, 241, 222, 0.2), rgba(244, 241, 222, 0.08)),
+      url('../images/hero-photo.webp');
+    background-position: 62% center;
   }
 
   .hero__sub-badge {
@@ -1775,7 +1851,7 @@ p {
 }
 
 .modal__close:hover {
-  color: var(--secondary-color);
+  color: var(--secondary-deep);
 }
 
 .modal__title {
