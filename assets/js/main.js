@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMicroCMS();
   initPrivacyModal();
   initMenuLightbox();
+  initGalleryLightbox();
 });
 
 /**
@@ -624,6 +625,92 @@ function initMenuLightbox() {
       close();
     }
   });
+}
+
+/**
+ * ギャラリー写真の拡大表示
+ * サムネイルは正方形にトリミングしてあるため、元の構図を見せる手段を用意する。
+ * 拡大用の画像は assets/images/large/ に長辺1200pxで置き、data-large で指す
+ */
+function initGalleryLightbox() {
+  const gallery = document.querySelector('.concept__gallery');
+  const lightbox = document.getElementById('js-gallery-lightbox');
+  const overlay = document.getElementById('js-gallery-lightbox-overlay');
+  const closeBtn = document.getElementById('js-gallery-lightbox-close');
+  const prevBtn = document.getElementById('js-gallery-lightbox-prev');
+  const nextBtn = document.getElementById('js-gallery-lightbox-next');
+  const zoomImg = document.getElementById('js-gallery-lightbox-img');
+  const captionEl = document.getElementById('js-gallery-lightbox-caption');
+  const counterEl = document.getElementById('js-gallery-lightbox-counter');
+
+  if (!gallery || !lightbox || !overlay || !closeBtn || !prevBtn || !nextBtn || !zoomImg) return;
+
+  const triggers = Array.from(gallery.querySelectorAll('.concept__gallery-thumb'));
+  if (!triggers.length) return;
+
+  let current = 0;
+
+  const srcOf = (trigger) => trigger.dataset.large || trigger.querySelector('img').src;
+
+  const show = (index) => {
+    current = (index + triggers.length) % triggers.length;
+    const trigger = triggers[current];
+    const thumb = trigger.querySelector('img');
+    const caption = trigger.parentElement.querySelector('.concept__gallery-caption');
+
+    zoomImg.src = srcOf(trigger);
+    zoomImg.alt = thumb.alt;
+    if (captionEl) captionEl.textContent = caption ? caption.textContent : '';
+    if (counterEl) counterEl.textContent = (current + 1) + ' / ' + triggers.length;
+
+    // 前後の画像を先読みしておき、送ったときの待ちを減らす
+    [current - 1, current + 1].forEach((i) => {
+      const neighbor = triggers[(i + triggers.length) % triggers.length];
+      new Image().src = srcOf(neighbor);
+    });
+  };
+
+  const open = (index) => {
+    show(index);
+    lightbox.classList.add('is-active');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  };
+
+  const close = () => {
+    lightbox.classList.remove('is-active');
+    document.body.style.overflow = '';
+    triggers[current].focus();
+  };
+
+  triggers.forEach((trigger, index) => {
+    trigger.addEventListener('click', () => open(index));
+  });
+
+  prevBtn.addEventListener('click', () => show(current - 1));
+  nextBtn.addEventListener('click', () => show(current + 1));
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', close);
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('is-active')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') show(current - 1);
+    else if (e.key === 'ArrowRight') show(current + 1);
+  });
+
+  // スマホは左右スワイプでも送れるようにする
+  const stage = lightbox.querySelector('.gallery-lightbox__stage');
+  let touchStartX = null;
+  stage.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  stage.addEventListener('touchend', (e) => {
+    if (touchStartX === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(delta) > 40) show(delta < 0 ? current + 1 : current - 1);
+    touchStartX = null;
+  }, { passive: true });
 }
 
 /**

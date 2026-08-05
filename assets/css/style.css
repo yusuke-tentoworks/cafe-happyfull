@@ -511,11 +511,55 @@ p {
   margin-top: var(--spacing-lg);
 }
 
+.concept__gallery-hint {
+  margin: var(--spacing-lg) 0 var(--spacing-xs);
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* 見出しとの間隔はヒント側で確保しているので、直後のギャラリーは詰める */
+.concept__gallery-hint + .concept__gallery {
+  margin-top: 0;
+}
+
+/* タッチ環境では「タップ」に言い換える */
+.concept__gallery-hint-touch {
+  display: none;
+}
+
+@media (hover: none) {
+  .concept__gallery-hint-pointer {
+    display: none;
+  }
+
+  .concept__gallery-hint-touch {
+    display: inline;
+  }
+}
+
+/* figure 要素なのでブラウザ既定のマージンを打ち消す */
 .concept__gallery-item {
+  margin: 0;
+}
+
+/* クリックで拡大表示するのでボタン。ブラウザ既定の見た目を打ち消す */
+.concept__gallery-thumb {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
   aspect-ratio: 1 / 1;
   border-radius: var(--border-radius-md);
   overflow: hidden;
   box-shadow: var(--box-shadow-soft);
+}
+
+.concept__gallery-thumb:focus-visible {
+  outline: 2px solid var(--primary-deep);
+  outline-offset: 3px;
 }
 
 .concept__gallery-item img {
@@ -527,6 +571,14 @@ p {
 
 .concept__gallery-item:hover img {
   transform: scale(1.05);
+}
+
+.concept__gallery-caption {
+  margin-top: var(--spacing-xs);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-align: center;
 }
 
 /* ==========================================================================
@@ -1939,6 +1991,81 @@ p {
   display: none;
 }
 
+/* --------------------------------------------------------------------------
+   Gallery Lightbox
+   メニュー表のライトボックス（.lightbox）を土台に、画像を画面内に収めて表示し、
+   前後送りとキャプションを足したもの
+   -------------------------------------------------------------------------- */
+
+.gallery-lightbox__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.gallery-lightbox__stage img {
+  display: block;
+  max-width: 100%;
+  max-height: 78vh;
+  width: auto;
+  height: auto;
+  border-radius: var(--border-radius-md);
+  background-color: #fff;
+}
+
+.gallery-lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #fff;
+  background-color: rgba(62, 71, 73, 0.55);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.gallery-lightbox__nav:hover {
+  background-color: rgba(62, 71, 73, 0.85);
+}
+
+.gallery-lightbox__nav:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.gallery-lightbox__nav--prev {
+  left: 0.6rem;
+}
+
+.gallery-lightbox__nav--next {
+  right: 0.6rem;
+}
+
+.gallery-lightbox__caption {
+  flex-shrink: 0;
+  margin: var(--spacing-xs) 0 0;
+  text-align: center;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.gallery-lightbox__counter {
+  margin-left: 0.8em;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
 @media (max-width: 768px) {
   /* SPでは幅に合わせず高さ基準で拡大し、横スクロールで読ませる */
   .lightbox__scroll img {
@@ -1954,6 +2081,25 @@ p {
     text-align: center;
     color: #fff;
     font-size: 0.8rem;
+  }
+
+  /* ギャラリーは画像を画面内に収めるため、SPでも横スクロールのヒントは出さない */
+  .gallery-lightbox .lightbox__hint {
+    display: none;
+  }
+
+  .gallery-lightbox__nav {
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+  }
+
+  .gallery-lightbox__nav--prev {
+    left: 0.2rem;
+  }
+
+  .gallery-lightbox__nav--next {
+    right: 0.2rem;
   }
 }
 

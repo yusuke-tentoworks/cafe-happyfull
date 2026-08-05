@@ -109,17 +109,74 @@
         </div>
       </div>
 
+      <!-- SPではカーソルが変わらず拡大できることに気づけないため、文言で伝える -->
+      <p class="concept__gallery-hint">
+        <span class="concept__gallery-hint-pointer">写真をクリックすると大きく表示できます</span>
+        <span class="concept__gallery-hint-touch">写真をタップすると大きく表示できます</span>
+      </p>
+
+      <!-- 席・人 → サポーターの活動 → お店の風景 の順に並べ、キャプションで内容を明示する -->
       <div class="concept__gallery">
-        <div class="concept__gallery-item"><img src="assets/images/gallery-owner.webp" alt="はぴふるのスタッフ" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/gallery-coworking.webp" alt="コワーキングスペース" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/gallery-sofa.webp" alt="ソファー席" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/gallery-zashiki-1.webp" alt="座敷席" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/gallery-zashiki-2.webp" alt="座敷席の様子" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/gallery-opening-2.webp" alt="店内に飾られたドライフラワー" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/boxshop-photo.webp" alt="boxshopの委託販売棚" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/gallery-meeting.webp" alt="店内でくつろぐお客様" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/gallery-opening-1.webp" alt="開店祝いのお花" loading="lazy"></div>
-        <div class="concept__gallery-item"><img src="assets/images/gallery-register.webp" alt="レジカウンターに並ぶお客様" loading="lazy"></div>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-owner.webp">
+            <img src="assets/images/gallery-owner.webp" alt="はぴふるのマスター" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">マスター</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-sofa.webp">
+            <img src="assets/images/gallery-sofa.webp" alt="窓際のソファー席" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">ソファー席</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-coworking.webp">
+            <img src="assets/images/gallery-coworking.webp" alt="6席のコワーキングスペース" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">コワーキングスペース</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-zashiki-1.webp">
+            <img src="assets/images/gallery-zashiki-1.webp" alt="丸テーブルを置いた座敷席" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">座敷席</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-zashiki-2.webp">
+            <img src="assets/images/gallery-zashiki-2.webp" alt="座敷席の窓際カウンターでくつろぐ様子" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">座敷席の窓際</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/boxshop-photo.webp">
+            <img src="assets/images/boxshop-photo.webp" alt="boxshopの委託販売棚" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">boxshop（委託販売）</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-register.webp">
+            <img src="assets/images/gallery-register.webp" alt="間借りカフェの出店中にカウンターへ並ぶお客様" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">間借りカフェ利用</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-meeting.webp">
+            <img src="assets/images/gallery-meeting.webp" alt="窓際の席で打ち合わせをするお客様" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">ミーティングにも</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-opening-1.webp">
+            <img src="assets/images/gallery-opening-1.webp" alt="開店祝いのお花" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">開店祝いのお花</figcaption>
+        </figure>
+        <figure class="concept__gallery-item">
+          <button type="button" class="concept__gallery-thumb" data-large="assets/images/large/gallery-opening-2.webp">
+            <img src="assets/images/gallery-opening-2.webp" alt="店内に飾られたドライフラワー" loading="lazy">
+          </button>
+          <figcaption class="concept__gallery-caption">ドライフラワー</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -533,6 +590,30 @@
         <img id="js-menu-lightbox-img" src="" alt="">
       </div>
       <p class="lightbox__hint">左右にスワイプすると全体をご覧いただけます</p>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     Gallery Lightbox (ギャラリー写真の拡大表示)
+     サムネイルは正方形にトリミングしてあるため、元の構図を見せる手段として用意する
+     ========================================== -->
+  <div id="js-gallery-lightbox" class="lightbox gallery-lightbox">
+    <div class="lightbox__overlay" id="js-gallery-lightbox-overlay"></div>
+    <div class="lightbox__panel" role="dialog" aria-modal="true" aria-label="写真の拡大表示">
+      <div class="lightbox__bar">
+        <button type="button" id="js-gallery-lightbox-close" class="lightbox__close" aria-label="閉じる">&times;</button>
+      </div>
+      <div class="gallery-lightbox__stage">
+        <button type="button" id="js-gallery-lightbox-prev" class="gallery-lightbox__nav gallery-lightbox__nav--prev"
+          aria-label="前の写真">&#10094;</button>
+        <img id="js-gallery-lightbox-img" src="" alt="">
+        <button type="button" id="js-gallery-lightbox-next" class="gallery-lightbox__nav gallery-lightbox__nav--next"
+          aria-label="次の写真">&#10095;</button>
+      </div>
+      <p class="gallery-lightbox__caption">
+        <span id="js-gallery-lightbox-caption"></span>
+        <span id="js-gallery-lightbox-counter" class="gallery-lightbox__counter"></span>
+      </p>
     </div>
   </div>
 
