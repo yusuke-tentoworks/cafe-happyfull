@@ -94,52 +94,12 @@ function initSmoothScroll() {
 }
 
 /**
- * 3. microCMS 動的データ取得 & モックフォールバック
+ * 3. microCMS 動的データ取得
+ *
+ * 取得に失敗したときは固定データで代替しない。
+ * 期限切れの告知や旧価格を出してしまうより、読み込めなかったことを伝えるほうが害が小さい。
  */
 async function initMicroCMS() {
-  // まずはお知らせとメニューの初期表示用モックデータを定義（API未接続時のフォールバック）
-  const mockNews = [
-    {
-      id: 'pre-open',
-      title: '6月20日(土)・21日(日) プレオープン開催決定！',
-      date: '2026-05-27',
-      content: '諏訪プリオビル2階に新しくオープンする「カフェ はぴふる」です。オープンに先駆けて、2日間のプレオープンを行います。こだわりのハンドドリップコーヒーと、本場仕込みの北欧風シナモンロールをぜひお試しください！皆様のお越しを心よりお待ちしております。'
-    },
-    {
-      id: 'supporters',
-      title: '第1期「はぴふるサポーター」大募集！',
-      date: '2026-05-27',
-      content: '間借りカフェマスター、マルシェメンバーズ、boxshopオーナー、レンタルキッチン利用者を募集中です。あなたの「得意」や「やってみたい」を、はぴふるで形にしませんか？まずはお気軽にお問い合わせください。'
-    }
-  ];
-
-  const mockMenu = [
-    {
-      id: 'coffee-drip',
-      'store-name': 'カフェ はぴふる',
-      'product-name': '自家焙煎ハンドドリップコーヒー',
-      price: 500,
-      description: '豊川の小さな自家焙煎コーヒー店の豆を厳選し、丁寧にハンドドリップいたします。お好みに合わせた豆をご用意。',
-      image: 'assets/images/coffee.webp'
-    },
-    {
-      id: 'cinnamon-roll',
-      'store-name': 'カフェ はぴふる',
-      'product-name': '手作り北欧風シナモンロール',
-      price: 380,
-      description: '生地にカルダモンを贅沢に練り込んだ、北欧スウェーデンの本格的な味覚をお楽しみいただけます。コーヒーとの相性抜群です。',
-      image: 'assets/images/cinnamon.webp'
-    },
-    {
-      id: 'cafe-au-lait',
-      'store-name': 'カフェ はぴふる',
-      'product-name': 'カフェオレ',
-      price: 550,
-      description: '深煎りの自家焙煎コーヒーに、たっぷりの温かいミルクを注ぎました。まろやかで優しい味わいです。',
-      image: '' // 画像なしのフォールバック
-    }
-  ];
-
   // URLからプレビュー用のクエリパラメータを取得
   const urlParams = new URLSearchParams(window.location.search);
   const contentId = urlParams.get('contentId');
@@ -246,8 +206,8 @@ async function initMicroCMS() {
     }
     renderNews(news);
   } catch (e) {
-    console.warn('microCMS News API Fetch Failed. Loading Mock Data instead.', e);
-    renderNews(mockNews);
+    console.warn('microCMS News API Fetch Failed.', e);
+    renderLoadError('js-news-list', 'お知らせを読み込めませんでした。しばらくしてからページを再読み込みしてください。');
   }
 
   // メニュー（Menu）のフェッチとマージ
@@ -270,8 +230,8 @@ async function initMicroCMS() {
     }
     renderMenu(menu);
   } catch (e) {
-    console.warn('microCMS Menu API Fetch Failed. Loading Mock Data instead.', e);
-    renderMenu(mockMenu);
+    console.warn('microCMS Menu API Fetch Failed.', e);
+    renderLoadError('js-menu-list', 'メニューを読み込めませんでした。しばらくしてからページを再読み込みしてください。');
   }
 
   // 営業日カレンダーのフェッチ
@@ -348,6 +308,16 @@ async function fetchFromMicroCMS(endpoint, params = {}) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   return await response.json();
+}
+
+/**
+ * 取得に失敗したことを伝えるメッセージの描画
+ * 「0件」と「読み込めなかった」を混同させないよう、空状態とは別の文言を出す
+ */
+function renderLoadError(containerId, message) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = `<p class="empty-state">${escapeHtml(message)}</p>`;
 }
 
 /**
@@ -457,7 +427,7 @@ function renderMenu(menuList) {
   }
 
   menuContainer.innerHTML = menuList.map(item => {
-    // 画像が無い場合のプレースホルダー。microCMSの画像オブジェクト { url: '...' } とモック用文字列の両方に対応
+    // 画像が無い場合のプレースホルダー。microCMSの画像オブジェクト { url: '...' } と文字列の両方に対応
     const rawImage = (item.image && typeof item.image === 'object') ? item.image.url : item.image;
     const hasImage = !!rawImage;
     // カードの表示サイズは約280x200。Retina想定で2倍の600pxに抑える
@@ -472,11 +442,11 @@ function renderMenu(menuList) {
       ? (String(item.price).endsWith('円') ? item.price : `${item.price}円`)
       : '';
 
-    // 説明の取得（APIスキーマの description と、モックデータの desc の両方に対応）
+    // 説明の取得（現行スキーマの description と、旧スキーマの desc の両方に対応）
     // 改行を表示に反映する（white-space: pre-wrap）ため、前後の余分な改行は落としておく
     const menuDesc = String(item.description || item.desc || '').trim();
 
-    // 商品名の取得（新スキーマの product-name と、旧モックデータの title の両方に対応）
+    // 商品名の取得（現行スキーマの product-name と、旧スキーマの title の両方に対応）
     const productName = item['product-name'] || item.title || '';
 
     // 店名の取得（新スキーマの store-name。未入力時はラベルを出さない）
