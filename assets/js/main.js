@@ -64,17 +64,30 @@ function initMobileMenu() {
  * 2. アンカーリンクのスムーズスクロール
  */
 function initSmoothScroll() {
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // ロゴの href は JS が無い環境向けのフォールバックで "/" になっている。
+  // a[href^="#"] では拾えないので個別にハンドラを付け、最上部へのスムーズスクロールを維持する。
+  const logo = document.getElementById('js-logo-top');
+  if (logo) {
+    logo.addEventListener('click', (e) => {
+      e.preventDefault();
+      scrollToTop();
+    });
+  }
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    // プライバシーポリシーはモーダルを開くリンク。href="#js-privacy-modal" は
+    // JS無効時に :target でモーダルを表示させるためのもので、スクロール対象ではない。
+    if (anchor.id === 'js-privacy-trigger') return;
+
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
       const targetId = this.getAttribute('href');
 
-      // ロゴまたは「#」のみの場合はページ最上部へスムーズスクロール
-      if (targetId === '#' || this.id === 'js-logo-top') {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+      // 「#」のみの場合はページ最上部へスムーズスクロール
+      if (targetId === '#') {
+        scrollToTop();
         return;
       }
 
@@ -240,6 +253,9 @@ async function initMicroCMS() {
     renderCalendar(calendar);
   } catch (e) {
     console.warn('microCMS Calendar API Fetch Failed.', e);
+    // カレンダーは画像1枚だけのセクション。読み込めないと見出しと空の枠だけが残るので、
+    // お知らせ・メニューのようにエラー文言を出すのではなくセクションごと隠す。
+    hideCalendarSection();
   }
 
   // サポーター紹介（Supporter Profiles）のフェッチ
@@ -687,17 +703,25 @@ function initGalleryLightbox() {
  * 営業日カレンダー画像のレンダリング
  */
 function renderCalendar(data) {
-  if (!data) return;
+  if (!data) {
+    hideCalendarSection();
+    return;
+  }
 
   const items = Array.isArray(data) ? data : [data];
 
   const setCalendarImage = (imgElement, item) => {
-    if (!imgElement) return;
+    if (!imgElement) return false;
     const wrapper = imgElement.closest('.access__calendar-image-wrapper');
 
-    if (!item) {
+    const hide = () => {
+      imgElement.hidden = true;
       if (wrapper) wrapper.style.display = 'none';
-      return;
+    };
+
+    if (!item) {
+      hide();
+      return false;
     }
 
     const imageObj = item['calendar-image'];
@@ -708,18 +732,36 @@ function renderCalendar(data) {
       imageUrl = imageObj;
     }
 
-    if (imageUrl) {
-      // 表示幅は最大800px。Retina想定で2倍の1600pxに抑える
-      imgElement.src = withImageParams(imageUrl, 1600);
-      imgElement.alt = item.title || '営業日カレンダー';
-      if (wrapper) wrapper.style.display = '';
-    } else if (wrapper) {
-      wrapper.style.display = 'none';
+    if (!imageUrl) {
+      hide();
+      return false;
     }
+
+    // 表示幅は最大800px。Retina想定で2倍の1600pxに抑える
+    imgElement.src = withImageParams(imageUrl, 1600);
+    imgElement.alt = item.title || '営業日カレンダー';
+    imgElement.hidden = false;
+    if (wrapper) wrapper.style.display = '';
+    return true;
   };
 
-  setCalendarImage(document.getElementById('js-calendar-img'), items[0]);
-  setCalendarImage(document.getElementById('js-calendar-img-2'), items[1]);
+  const shown = [
+    setCalendarImage(document.getElementById('js-calendar-img'), items[0]),
+    setCalendarImage(document.getElementById('js-calendar-img-2'), items[1])
+  ];
+
+  // 1枚も出せなかったときは見出しだけが残るのでセクションごと隠す
+  if (!shown.some(Boolean)) {
+    hideCalendarSection();
+  }
+}
+
+/**
+ * 営業日カレンダーのセクションごと非表示にする
+ */
+function hideCalendarSection() {
+  const section = document.querySelector('.access__calendar');
+  if (section) section.style.display = 'none';
 }
 
 /**
@@ -863,6 +905,7 @@ function initPrivacyModal() {
     // 開く
     trigger.addEventListener('click', (e) => {
       e.preventDefault();
+      modal.classList.remove('is-dismissed');
       modal.classList.add('is-active');
       document.body.style.overflow = 'hidden'; // 背景スクロールを防止
     });
@@ -870,6 +913,10 @@ function initPrivacyModal() {
     // 閉じる関数
     const closeModal = () => {
       modal.classList.remove('is-active');
+      // #js-privacy-modal 付きのURLで開かれた場合はCSSの :target で表示されている。
+      // Chromeは history.replaceState でハッシュを消しても :target を再評価しないため、
+      // クラスで打ち消す（CSS側の :not(.is-dismissed) と対）。
+      modal.classList.add('is-dismissed');
       document.body.style.overflow = ''; // スクロール復元
     };
 

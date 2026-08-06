@@ -32,7 +32,7 @@
      ========================================== -->
   <header class="header">
     <div class="container header__container">
-      <a href="#" id="js-logo-top" class="header__logo">
+      <a href="/" id="js-logo-top" class="header__logo">
         <img src="assets/images/logo.webp" alt="カフェ はぴふる Logo" class="header__logo-img">
         カフェ はぴふる
       </a>
@@ -101,7 +101,7 @@
             豊川のまん中、諏訪のプリオビル2階の<span class="nobr">「カフェ はぴふる」</span>は、単にお茶を飲む場所ではなく、みんなで作るみんなが主役のカフェです。
           </p>
           <p class="concept__text">
-            お買い物の合間の休憩に、子育てネットやカルチャー講座のお帰りに…など、どうぞお気軽にお立ち寄りください。おひとりでのんびり過ごすのはもちろん、グループ分けでのちょっとしたミーティングやマスターとのおしゃべりもお楽しみいただけます。
+            お買い物の合間の休憩に、子育てネットやカルチャー講座のお帰りに…など、どうぞお気軽にお立ち寄りください。おひとりでのんびり過ごすのはもちろん、グループでのちょっとしたミーティングやマスターとのおしゃべりもお楽しみいただけます。
           </p>
           <p class="concept__text">
             店内には、ちょっとした仕事や作業ができる<b>コワーキングスペース（6席）</b>も完備しています。
@@ -276,7 +276,7 @@
           <h3 class="supporter-card__title"><span class="nobr">間借りカフェ</span><span class="nobr">マスター</span></h3>
           <span class="supporter-card__badge">キッチンサポーター</span>
           <p class="supporter-card__desc">
-            カフェのキッチンを使って、自分のこだわりメニューや得意料理を振る舞うお店を出すことができます。週1日や月数回など、1日4時間から柔軟に営業可能。(時間帯: 10:00〜19:00 ※応相談)
+            カフェのキッチンを使って、自分のこだわりメニューや得意料理を振る舞うお店を出すことができます。週1日や月数回など、1日4時間から柔軟に営業可能。（時間帯：10:00〜19:00 ※応相談）
           </p>
           <span class="supporter-card__note">※食品衛生責任者の資格が必要です。</span>
         </div>
@@ -295,7 +295,7 @@
           <h3 class="supporter-card__title"><span class="nobr">マルシェ</span><span class="nobr">メンバーズ</span></h3>
           <span class="supporter-card__badge">マルシェサポーター</span>
           <p class="supporter-card__desc">
-            毎月行われるお店のスペースを利用したマルシェに出店できます。飲食・クラフト雑貨・占い・リラクゼーション等、様々なジャンルの方を募集中です。(基本土日祝 10:00〜15:00)
+            毎月行われるお店のスペースを利用したマルシェに出店できます。飲食・クラフト雑貨・占い・リラクゼーション等、様々なジャンルの方を募集中です。（基本土日祝 10:00〜15:00）
           </p>
           <span class="supporter-card__note">※飲食関係の出店には食品衛生責任者が必要です。</span>
         </div>
@@ -448,7 +448,7 @@
             </tr>
             <tr>
               <th>所在地</th>
-              <td>〒442-0068 愛知県豊川市諏訪三丁目３００番地 プリオ2階</td>
+              <td>〒442-0068 愛知県豊川市諏訪三丁目300番地 プリオ2階</td>
             </tr>
             <tr>
               <th>電話番号</th>
@@ -465,7 +465,7 @@
           </table>
 
           <div class="access__sns">
-            <span style="font-weight: 700;">公式Instagram:</span>
+            <span style="font-weight: 700;">公式Instagram：</span>
             <a href="https://www.instagram.com/cafe_happyfull/" target="_blank" rel="noopener" class="access__sns-link">
               @cafe_happyfull ↗
             </a>
@@ -476,11 +476,12 @@
       <!-- 営業日カレンダー -->
       <div class="access__calendar">
         <h3 class="access__calendar-title">営業日カレンダー</h3>
+        <!-- 画像URLはmicroCMSから入る。src未確定の状態で表示させないため hidden で伏せておく -->
         <div class="access__calendar-image-wrapper">
-          <img id="js-calendar-img" src="" alt="営業日カレンダー" loading="lazy">
+          <img id="js-calendar-img" alt="営業日カレンダー" loading="lazy" hidden>
         </div>
         <div class="access__calendar-image-wrapper">
-          <img id="js-calendar-img-2" src="" alt="営業日カレンダー" loading="lazy">
+          <img id="js-calendar-img-2" alt="営業日カレンダー" loading="lazy" hidden>
         </div>
       </div>
     </div>
@@ -513,23 +514,23 @@
             <label class="form__label">お問い合わせの種類（複数選択可）</label>
             <div class="form__checkbox-group">
               <label class="form__checkbox-label">
-                <input type="checkbox" name="categories[]" value="間借りカフェマスター(キッチンサポーター)">
+                <input type="checkbox" name="categories[]" value="間借りカフェマスター（キッチンサポーター）">
                 間借りカフェマスター（キッチンサポーター）について
               </label>
               <label class="form__checkbox-label">
-                <input type="checkbox" name="categories[]" value="マルシェメンバーズ(マルシェサポーター)">
+                <input type="checkbox" name="categories[]" value="マルシェメンバーズ（マルシェサポーター）">
                 マルシェメンバーズ（マルシェサポーター）について
               </label>
               <label class="form__checkbox-label">
-                <input type="checkbox" name="categories[]" value="boxshopオーナー(委託販売サポーター)">
+                <input type="checkbox" name="categories[]" value="boxshopオーナー（委託販売サポーター）">
                 boxshopオーナー（委託販売サポーター）について
               </label>
               <label class="form__checkbox-label">
-                <input type="checkbox" name="categories[]" value="食品の仕入れ協力(まちのつくり手サポーター)">
+                <input type="checkbox" name="categories[]" value="食品の仕入れ協力（まちのつくり手サポーター）">
                 食品の仕入れ協力（まちのつくり手サポーター）について
               </label>
               <label class="form__checkbox-label">
-                <input type="checkbox" name="categories[]" value="レンタルキッチン(菓子製造)の利用">
+                <input type="checkbox" name="categories[]" value="レンタルキッチン（菓子製造）の利用">
                 レンタルキッチン（菓子製造）の利用について
               </label>
               <label class="form__checkbox-label">
@@ -570,7 +571,7 @@
           <a href="#menu" class="footer__link">メニュー</a>
           <a href="#access" class="footer__link">アクセス</a>
           <a href="#contact" class="footer__link">お問い合わせ</a>
-          <a href="#" id="js-privacy-trigger" class="footer__link">プライバシーポリシー</a>
+          <a href="#js-privacy-modal" id="js-privacy-trigger" class="footer__link">プライバシーポリシー</a>
         </nav>
       </div>
       <p class="footer__copyright">© 2026 Cafe Happyfull. All Rights Reserved.</p>
@@ -587,7 +588,8 @@
         <button type="button" id="js-menu-lightbox-close" class="lightbox__close" aria-label="閉じる">&times;</button>
       </div>
       <div class="lightbox__scroll">
-        <img id="js-menu-lightbox-img" src="" alt="">
+        <!-- src・alt は開いたときにJSが入れる（空の src はHTML的に不正なため属性ごと置かない） -->
+        <img id="js-menu-lightbox-img" alt="">
       </div>
       <p class="lightbox__hint">左右にスワイプすると全体をご覧いただけます</p>
     </div>
@@ -606,7 +608,8 @@
       <div class="gallery-lightbox__stage">
         <button type="button" id="js-gallery-lightbox-prev" class="gallery-lightbox__nav gallery-lightbox__nav--prev"
           aria-label="前の写真">&#10094;</button>
-        <img id="js-gallery-lightbox-img" src="" alt="">
+        <!-- src・alt は開いたときにJSが入れる（空の src はHTML的に不正なため属性ごと置かない） -->
+        <img id="js-gallery-lightbox-img" alt="">
         <button type="button" id="js-gallery-lightbox-next" class="gallery-lightbox__nav gallery-lightbox__nav--next"
           aria-label="次の写真">&#10095;</button>
       </div>

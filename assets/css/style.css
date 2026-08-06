@@ -1438,6 +1438,11 @@ p {
   height: auto;
 }
 
+/* display:block が hidden 属性の既定を打ち消してしまうため明示的に隠す */
+.access__calendar-image-wrapper img[hidden] {
+  display: none;
+}
+
 /* ==========================================================================
    Contact (Netlify Forms)
    ========================================================================== */
@@ -2124,6 +2129,21 @@ p {
 .modal.is-active {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* JSが動かない環境向けのフォールバック。
+   フッターのリンク（href="#js-privacy-modal"）だけで本文を読めるようにする。
+   JS有効時はスクリプト側が preventDefault するのでハッシュは付かず、:target は効かない。
+   .is-dismissed は「ハッシュ付きURLで開いたあと閉じる」ための逃げ道。
+   history.replaceState でハッシュを消しても Chrome は :target を再評価しないため、
+   クラスで打ち消す必要がある。 */
+.modal:target:not(.is-dismissed) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal:target:not(.is-dismissed) .modal__card {
+  transform: translateY(0);
 }
 
 .modal__overlay {
